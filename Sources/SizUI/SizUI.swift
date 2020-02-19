@@ -150,6 +150,7 @@ public extension UIView {
 		self.layer.cornerRadius = radius
 	}
 	
+	@available(iOS 9.0, *)
 	func setMatchTo(parent: UIView) {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
