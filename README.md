@@ -16,6 +16,31 @@ Go to Project -> Swift Packages and add the repository:
 https://github.com/Sizuha/SizUI-iOS
 ```
 
+# DarkModeの確認
+```swift
+import SizUI
+
+// UIViewの場合
+if view.isDarkMode { 
+	... 
+} else { 
+	... 
+}
+
+// UIViewControllerの場合
+class XXXViewController: UIViewController {
+	func some() {
+		if self.isDarkMode {
+			...
+		} else {
+			...
+		}
+	}
+}
+
+
+```
+
 # Alert Dialog
 ```swift
 import SizUI
