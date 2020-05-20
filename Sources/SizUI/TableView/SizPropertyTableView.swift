@@ -45,8 +45,9 @@ open class SizPropertyTableRow {
 		multiLine,
 		button,
 		stepper,
-		custome,
-		datetime
+		custom,
+		datetime,
+        image
 	}
 	
 	let type: CellType
@@ -73,7 +74,7 @@ open class SizPropertyTableRow {
 		id: String? = nil,
 		label: String = "")
 	{
-		self.type = cellClass != nil ? .custome : type
+		self.type = cellClass != nil ? .custom : type
 		self.label = label
 		
 		switch type {
@@ -191,7 +192,7 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	open var onGetCellHieght: (()->CGFloat)? = nil
 	open var onValueChanged: ((_ value: Any?)->Void)? = nil
 	
-	open class var cellType: SizPropertyTableRow.CellType { .custome }
+	open class var cellType: SizPropertyTableRow.CellType { .custom }
 }
 
 open class SizPropertyTableView: SizTableView, UITableViewDataSource
@@ -286,12 +287,10 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
                     cell.textField.textColor = textColor
                 }
             }
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 
 		case .editText:
             guard let cell = cellView as? SizCellForEditText else { break }
             cell.placeholder = cellItem.hint
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .datetime:
             guard let cell = cellView as? SizCellForDateTime else { break }
@@ -304,7 +303,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
                     cell.textField.textColor = textColor
                 }
             }
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 
 			
 		case .stepper:
@@ -318,35 +316,28 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 
             cell.textLabel?.text = cellItem.label
             cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 			
 		case .onOff:
             guard let cell = cellView as? SizCellForOnOff else { break }
             cell.textLabel?.text = cellItem.label
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .rating:
             guard let cell = cellView as? SizCellForRating else { break }
             cell.textLabel?.text = cellItem.label
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
-			
-		case .custome:
-            guard let cell = cellView as? SizPropertyTableCell else { break }
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .multiLine:
 			cellView.accessoryType = cellItem.onSelect != nil
 				? .disclosureIndicator
 				: .none
-			
-            guard let cell = cellView as? SizCellForMultiLine else { break }
-            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
+            //guard let cell = cellView as? SizCellForMultiLine else { break }
 			
 		case .button:
 			cellView.textLabel?.text = cellItem.label
 			cellView.textLabel?.textColor = cellItem.tintColor ?? self.tintColor
-			
+            
+        case .image: fallthrough
+        case .custom: fallthrough
 		case .text: fallthrough
 		default:
 			cellView.accessoryType = cellItem.onSelect != nil
@@ -358,8 +349,8 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 				cellView.detailTextLabel?.textColor = textColor
 			}
             
-            if let cell = cellView as? SizPropertyTableCell {
-                cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
+            if let _ = cellView as? SizPropertyTableCell {
+                // nothing
             }
             else {
                 cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
@@ -390,6 +381,8 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 	
 	override open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
 		if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
+            (cell as? SizPropertyTableCell)?.updateContent(data: cellItem.dataSource?(), at: cellItem)
+            
 			if let onWillDisplay = cellItem.onWillDisplay {
 				onWillDisplay(cell, rowAt)
 				return
@@ -1039,5 +1032,62 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
         return super.canPerformAction(action, withSender: sender)
 	}
 	
+}
+
+
+//MARK: - Cell: Image
+
+open class SizCellForImage: SizPropertyTableCell {
+    open override class var cellType: SizPropertyTableRow.CellType { .image }
+    
+    public var contentImageView: UIImageView!
+    public var imageHeight: CGFloat = 100
+    
+    public var paddingTop: CGFloat = 10
+    
+    open override func onInit() {
+        super.onInit()
+        
+        contentImageView = UIImageView()
+        contentImageView.frame = CGRect(
+            x: DefaultCellPadding.left,
+            y: paddingTop,
+            width: contentView.frame.width - DefaultCellPadding.left - DefaultCellPadding.right,
+            height: imageHeight
+        )
+        addSubview(contentImageView)
+    }
+    
+    public static let paddingVertical = CGFloat(10)
+    
+    private var paddingRight: CGFloat {
+        return accessoryType == .none ? DefaultCellPadding.right : 0
+    }
+    
+    open override func refreshViews() {
+        let paddingRight = accessoryType == .none ? DefaultCellPadding.right : 0
+        
+        contentImageView.frame = CGRect(
+            x: DefaultCellPadding.left,
+            y: paddingTop,
+            width: contentView.frame.width - DefaultCellPadding.left - paddingRight,
+            height: imageHeight
+        )
+    }
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        if let image = data as? UIImage {
+            contentImageView?.image = image
+        }
+        else if let data = data as? Data {
+            contentImageView?.image = UIImage(data: data)
+        }
+        else {
+            contentImageView?.image = nil
+        }
+    }
+    
+    open override var textLabel: UILabel? { return nil }
+    open override var detailTextLabel: UILabel? { return nil }
 }
 

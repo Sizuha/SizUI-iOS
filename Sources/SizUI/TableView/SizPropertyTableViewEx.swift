@@ -110,3 +110,4 @@ public typealias RatingCell = TableCellDefineBase<SizCellForRating>
 public typealias ButtonCell = TableCellDefineBase<SizCellForButton>
 public typealias StepperCell = TableCellDefineBase<SizCellForStepper>
 public typealias DateTimeCell = TableCellDefineBase<SizCellForDateTime>
+public typealias ImageCell = TableCellDefineBase<SizCellForImage>
