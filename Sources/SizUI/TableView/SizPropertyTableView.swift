@@ -185,10 +185,10 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	}
 	
 	open func onInit() {}
-	public func refreshViews() {}
+	open func refreshViews() {}
 	
-	public var onGetCellHieght: (()->CGFloat)? = nil
-	public var onValueChanged: ((_ value: Any?)->Void)? = nil
+	open var onGetCellHieght: (()->CGFloat)? = nil
+	open var onValueChanged: ((_ value: Any?)->Void)? = nil
 	
 	open class var cellType: SizPropertyTableRow.CellType { .custome }
 }
