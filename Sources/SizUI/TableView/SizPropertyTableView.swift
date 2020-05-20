@@ -186,6 +186,7 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	open func onInit() {}
 	open func refreshViews() {}
+    open func updateContent(data: Any?, at row: SizPropertyTableRow) {}
 	
 	open var onGetCellHieght: (()->CGFloat)? = nil
 	open var onValueChanged: ((_ value: Any?)->Void)? = nil
@@ -274,107 +275,73 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 		switch cellItem.type {
 		case .select:
 			cellView.accessoryType = .disclosureIndicator
-			if let cell = cellView as? SizCellForSelect {
-				cell.selectionTitles = cellItem.selectionItems
-				cell.placeholder = cellItem.hint
-				if !cellItem.label.isEmpty {
-					cell.textLabel?.text = cellItem.label
-					cell.textField.textAlignment = .right
-					if let textColor = cellItem.textColor {
-						cell.textField.textColor = textColor
-					}
-				}
-				
-				let selIdx = cellItem.dataSource?() as? Int ?? -1
-				var displayText: String
-				if selIdx >= 0 && selIdx < (cellItem.selectionItems?.count ?? 0) {
-					displayText = cellItem.selectionItems?[selIdx] ?? ""
-				}
-				else {
-					displayText = ""
-				}
-				cell.textValue = displayText
-			}
+            guard let cell = cellView as? SizCellForSelect else { break }
+            
+			cell.selectionTitles = cellItem.selectionItems
+            cell.placeholder = cellItem.hint
+            if !cellItem.label.isEmpty {
+                cell.textLabel?.text = cellItem.label
+                cell.textField.textAlignment = .right
+                if let textColor = cellItem.textColor {
+                    cell.textField.textColor = textColor
+                }
+            }
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 
 		case .editText:
-			if let cell = cellView as? SizCellForEditText {
-				cell.placeholder = cellItem.hint
-				cell.textValue = cellItem.dataSource?() as? String ?? ""
-				if !cellItem.label.isEmpty {
-					cell.textLabel?.text = cellItem.label
-					cell.textField.textAlignment = .right
-					if let textColor = cellItem.textColor {
-						cell.textField.textColor = textColor
-					}
-				}
-			}
+            guard let cell = cellView as? SizCellForEditText else { break }
+            cell.placeholder = cellItem.hint
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .datetime:
-			if let cell = cellView as? SizCellForDateTime {
-				guard let textfield = cell.textField as? SizDatePickerField else { break }
-				
-				cell.placeholder = cellItem.hint
-				
-				if !cellItem.label.isEmpty {
-					cell.textLabel?.text = cellItem.label
-					cell.textField.textAlignment = .right
-					if let textColor = cellItem.textColor {
-						cell.textField.textColor = textColor
-					}
-				}
-				
-				if let date = cellItem.dataSource?() as? Date {
-					textfield.date = date
-					textfield.updateText()
-				}
-				else {
-					textfield.text = nil
-				}
-			}
+            guard let cell = cellView as? SizCellForDateTime else { break }
+            cell.placeholder = cellItem.hint
+            
+            if !cellItem.label.isEmpty {
+                cell.textLabel?.text = cellItem.label
+                cell.textField.textAlignment = .right
+                if let textColor = cellItem.textColor {
+                    cell.textField.textColor = textColor
+                }
+            }
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
+
 			
 		case .stepper:
-			if let cell = cellView as? SizCellForStepper {
-				cell.placeholder = cellItem.hint
-				
-				cell.textField.textAlignment = .right
-				if let textColor = cellItem.textColor {
-					cell.textField.textColor = textColor
-				}
+            guard let cell = cellView as? SizCellForStepper else { break }
+            cell.placeholder = cellItem.hint
+            
+            cell.textField.textAlignment = .right
+            if let textColor = cellItem.textColor {
+                cell.textField.textColor = textColor
+            }
 
-				cell.textLabel?.text = cellItem.label
-				cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
-				
-				let data = cellItem.dataSource?()
-				cell.value = data as? Double
-					?? Double(data as? Float ?? Float(data as? Int ?? 0))
-			}
+            cell.textLabel?.text = cellItem.label
+            cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
+			
 			
 		case .onOff:
-			if let cell = cellView as? SizCellForOnOff {
-				cell.textLabel?.text = cellItem.label
-				cell.switchCtrl.isOn = cellItem.dataSource?() as? Bool == true
-			}
+            guard let cell = cellView as? SizCellForOnOff else { break }
+            cell.textLabel?.text = cellItem.label
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .rating:
-			if let cell = cellView as? SizCellForRating {
-				cell.textLabel?.text = cellItem.label
-				cell.ratingBar.rating = cellItem.dataSource?() as? Double ?? 0.0
-			}
+            guard let cell = cellView as? SizCellForRating else { break }
+            cell.textLabel?.text = cellItem.label
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
-		case .custome: break
+		case .custome:
+            guard let cell = cellView as? SizPropertyTableCell else { break }
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .multiLine:
 			cellView.accessoryType = cellItem.onSelect != nil
 				? .disclosureIndicator
 				: .none
 			
-			if let cell = cellView as? SizCellForMultiLine {
-				cell.contentText = cellItem.dataSource?() as? String ?? ""
-				cell.placeholder = cellItem.hint
-				if let textColor = cellItem.textColor {
-					cell.textView.textColor = textColor
-				}
-			}
+            guard let cell = cellView as? SizCellForMultiLine else { break }
+            cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
 			
 		case .button:
 			cellView.textLabel?.text = cellItem.label
@@ -390,7 +357,13 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource
 			if let textColor = cellItem.textColor {
 				cellView.detailTextLabel?.textColor = textColor
 			}
-			cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
+            
+            if let cell = cellView as? SizPropertyTableCell {
+                cell.updateContent(data: cellItem.dataSource?(), at: cellItem)
+            }
+            else {
+                cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
+            }
 		}
 		
 		cellView.selectionStyle = cellItem.onSelect != nil ? .default : .none
@@ -522,6 +495,17 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
 			height: contentView.frame.size.height
 		)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        textValue = data as? String ?? ""
+        if !row.label.isEmpty {
+            textLabel?.text = row.label
+            textField.textAlignment = .right
+            if let textColor = row.textColor {
+                textField.textColor = textColor
+            }
+        }
+    }
 		
 	//--- UITextFieldDelegate ---
 	
@@ -595,6 +579,18 @@ open class SizCellForDateTime: SizCellForEditText {
 		
 		contentView.addSubview(super.textField)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        guard let textfield = self.textField as? SizDatePickerField else { return }
+        
+        if let date = data as? Date {
+            textfield.date = date
+            textfield.updateText()
+        }
+        else {
+            textfield.text = nil
+        }
+    }
 	
 }
 
@@ -676,6 +672,11 @@ open class SizCellForStepper: SizCellForEditText {
 			height: stepperHeight
 		)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        self.value = data as? Double
+            ?? Double(data as? Float ?? Float(data as? Int ?? 0))
+    }
 	
 	@objc func onStepperValueChanged(_ sender: UIStepper!) {
 		if enableConvertIntWhenChanged {
@@ -723,6 +724,10 @@ open class SizCellForOnOff: SizPropertyTableCell {
 	@objc private func onSwitchChanged(_ uiSwitch: UISwitch) {
 		onValueChanged?(uiSwitch.isOn)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        switchCtrl.isOn = data as? Bool == true
+    }
 }
 
 //MARK: - Cell: Text
@@ -772,6 +777,10 @@ open class SizCellForText: SizPropertyTableCell {
 			height: contentView.frame.size.height
 		)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        detailTextLabel?.text = data as? String ?? ""
+    }
 }
 
 //MARK: - Cell: MultiLine Text
@@ -873,6 +882,14 @@ open class SizCellForMultiLine: SizPropertyTableCell {
 			)
 		}
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        contentText = data as? String ?? ""
+        placeholder = row.hint
+        if let textColor = row.textColor {
+            textView.textColor = textColor
+        }
+    }
 	
 	public var contentText: String {
 		get {
@@ -928,6 +945,10 @@ open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
 			height: height
 		)
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        ratingBar.rating = data as? Double ?? 0.0
+    }
 	
 	/// Returns the rating value when touch events end
 	public func floatRatingView(_ ratingView: FloatRatingView, didUpdate rating: Double) {
@@ -977,6 +998,18 @@ open class SizCellForSelect: SizCellForEditText, UIPickerViewDelegate, UIPickerV
 	public override func refreshViews() {
 		super.refreshViews()
 	}
+    
+    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
+        let selIdx = data as? Int ?? -1
+        var displayText: String
+        if selIdx >= 0 && selIdx < (row.selectionItems?.count ?? 0) {
+            displayText = row.selectionItems?[selIdx] ?? ""
+        }
+        else {
+            displayText = ""
+        }
+        textValue = displayText
+    }
 	
 	public func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
