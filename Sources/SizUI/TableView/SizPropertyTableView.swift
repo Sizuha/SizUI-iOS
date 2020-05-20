@@ -105,6 +105,9 @@ open class SizPropertyTableRow {
 		case .datetime:
 			self.viewID = id ?? "siz_datetime"
 			self.cellClass = SizCellForDateTime.self
+        case .image:
+            self.viewID = id ?? "siz_image"
+            self.cellClass = SizCellForImage.self
 
 		default:
 			guard id != nil else {
