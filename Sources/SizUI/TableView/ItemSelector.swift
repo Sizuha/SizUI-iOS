@@ -35,7 +35,7 @@ open class ItemSelector: UIViewController {
     private var listView: UITableView!
     private let cell_reuseId = "item_selector_cell"
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
 
         listView = UITableView(frame: .zero, style: .grouped)
@@ -46,7 +46,7 @@ open class ItemSelector: UIViewController {
         view.addSubview(listView)
     }
     
-    override func viewWillLayoutSubviews() {
+    open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         listView.scaleFill(to: view)
     }
@@ -55,20 +55,20 @@ open class ItemSelector: UIViewController {
 
 @available(iOS 9.0, *)
 extension ItemSelector: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         tableView.dequeueReusableCell(withIdentifier: cell_reuseId)!
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.textLabel?.text = items[indexPath.row]
         cell.accessoryType = prevSelected == indexPath.row ? .checkmark : .none
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         popSelf()
         onSelected?(indexPath.row)
     }
