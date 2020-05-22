@@ -125,6 +125,23 @@ public extension UIColor {
 	}
 }
 
+// MARK: - UIImage
+
+public extension UIImage {
+    
+    convenience init?(url: URL, noCache: String? = nil) {
+        var imgUrl = url
+        if let noCache = noCache {
+            let has_q = url.absoluteString.contains("?")
+            imgUrl = url.appendingPathComponent(has_q ? "&\(noCache)" : "?\(noCache)")
+        }
+        
+        guard let data = try? Data(contentsOf: imgUrl) else { return nil }
+        self.init(data: data)
+    }
+    
+}
+
 
 // MARK: - UIApplication
 public extension UIApplication {
@@ -152,12 +169,17 @@ public extension UIView {
 	
 	@available(iOS 9.0, *)
 	func setMatchTo(parent: UIView) {
-		self.translatesAutoresizingMaskIntoConstraints = false
-		self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
-		self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
-		self.topAnchor.constraint(equalTo: parent.topAnchor).isActive = true
-		self.bottomAnchor.constraint(equalTo: parent.bottomAnchor).isActive = true
+        scaleFill(to: parent)
 	}
+    
+    @available(iOS 9.0, *)
+    func scaleFill(to targetView: UIView) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.leftAnchor.constraint(equalTo: targetView.leftAnchor).isActive = true
+        self.rightAnchor.constraint(equalTo: targetView.rightAnchor).isActive = true
+        self.topAnchor.constraint(equalTo: targetView.topAnchor).isActive = true
+        self.bottomAnchor.constraint(equalTo: targetView.bottomAnchor).isActive = true
+    }
 	
 	var isDarkMode: Bool {
 		if #available(iOS 12.0, *) {
@@ -197,11 +219,17 @@ public extension UIViewController {
 	
 	func popSelf(animated: Bool = true) {
 		if let naviCtrl = self.navigationController {
-			naviCtrl.popViewController(animated: animated)
-			
-			if naviCtrl.viewControllers.first == self {
-				self.dismiss(animated: true, completion: nil)
-			}
+            if naviCtrl.viewControllers.last == self {
+                naviCtrl.popViewController(animated: animated)
+            }
+            else if naviCtrl.viewControllers.first == self {
+                self.dismiss(animated: true, completion: nil)
+            }
+            else {
+                if let i = naviCtrl.viewControllers.lastIndex(of: self) {
+                    naviCtrl.viewControllers.remove(at: i)
+                }
+            }
 		}
 		else {
 			removeFromParent()

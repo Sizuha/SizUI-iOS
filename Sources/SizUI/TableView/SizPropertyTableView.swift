@@ -1067,6 +1067,8 @@ open class SizCellForImage: SizPropertyTableCell {
         return accessoryType == .none ? DefaultCellPadding.right : 0
     }
     
+    open override var imageView: UIImageView? { contentImageView }
+    
     open override func refreshViews() {
         let paddingRight = DefaultCellPadding.right //accessoryType == .none ? DefaultCellPadding.right : 0
         

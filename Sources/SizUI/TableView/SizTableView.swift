@@ -43,12 +43,12 @@ open class SizTableView
 	}
 	
 	
-	open func willSelect(rowAt: IndexPath) -> IndexPath? { return rowAt }
+	open func willSelect(rowAt: IndexPath) -> IndexPath? { rowAt }
 	open func didSelect(rowAt: IndexPath) {}
-	open func willDeselect(rowAt: IndexPath) -> IndexPath? { return rowAt }
+	open func willDeselect(rowAt: IndexPath) -> IndexPath? { rowAt }
 	open func didDeselect(rowAt: IndexPath) {}
 	
-	open func height(rowAt: IndexPath) -> CGFloat { return 0}
+	open func height(rowAt: IndexPath) -> CGFloat { 0 }
 	
 	open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {}
 	open func willDisplayHeaderView(view: UIView, section: Int) {}
