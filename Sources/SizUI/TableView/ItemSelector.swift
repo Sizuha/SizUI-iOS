@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 @available(iOS 9.0, *)
-class ItemSelector: UIViewController {
+open class ItemSelector: UIViewController {
     
     static func present(
         from: UINavigationController,
