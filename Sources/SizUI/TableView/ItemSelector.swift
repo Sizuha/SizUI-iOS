@@ -12,7 +12,7 @@ import UIKit
 @available(iOS 9.0, *)
 open class ItemSelector: UIViewController {
     
-    static func present(
+    open class func present(
         from: UINavigationController,
         title: String,
         items: [String],
