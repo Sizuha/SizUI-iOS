@@ -78,36 +78,33 @@ public extension SizPropertyTableRow {
 }
 
 
-public class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
+open class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
 	
-	class func getCellClass() -> AnyClass? { nil }
-	class func getCellViewID() -> String? { nil }
+    open class var cellReuseId: String? { nil }
 	
 	public init(
 		label: String = "",
 		attrs: [SizPropertyTableRow.Attribute] = [])
 	{
 		let cellType = T.cellType
-		let cellClass: AnyClass? = TableCellDefineBase.getCellClass()
-		let cellViewID = TableCellDefineBase.getCellViewID()
-		
-		super.init(type: cellType, cellClass: cellClass, id: cellViewID, label: label)
+        super.init(type: cellType, cellClass: T.self, id: Self.cellReuseId, label: label)
 		applyAttrs(attrs)
 	}
 	
-	public static func cellView(_ cell: UITableViewCell) -> T {
-		cell as! T
-	}
+	public static func cellView(_ cell: UITableViewCell) -> T { cell as! T }
 	
 }
+
+public typealias TableSection = SizPropertyTableSection
 
 public typealias CustomCell = TableCellDefineBase<SizPropertyTableCell>
 public typealias TextCell = TableCellDefineBase<SizCellForText>
 public typealias EditTextCell = TableCellDefineBase<SizCellForEditText>
 public typealias OnOffCell = TableCellDefineBase<SizCellForOnOff>
-public typealias SelectionCell = TableCellDefineBase<SizCellForSelect>
+public typealias PickerCell = TableCellDefineBase<SizCellForPicker>
 public typealias RatingCell = TableCellDefineBase<SizCellForRating>
 public typealias ButtonCell = TableCellDefineBase<SizCellForButton>
 public typealias StepperCell = TableCellDefineBase<SizCellForStepper>
 public typealias DateTimeCell = TableCellDefineBase<SizCellForDateTime>
 public typealias ImageCell = TableCellDefineBase<SizCellForImage>
+public typealias StringsCell = TableCellDefineBase<SizCellForStrings>
