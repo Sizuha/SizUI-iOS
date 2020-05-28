@@ -187,6 +187,27 @@ public extension UIView {
 		}
 		return false
 	}
+    
+    @available(iOS 9.0, *)
+    func alignBottomOf(navigationBar: UINavigationBar?, parent: UIView, marginTop: CGFloat = 0) {
+        guard let navigationBar = navigationBar else { return }
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: marginTop).isActive = true
+        self.heightAnchor.constraint(equalToConstant: self.frame.height).isActive = true
+        self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
+        self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
+    }
+    
+    @available(iOS 9.0, *)
+    func alignBottomOf(view: UIView, parent: UIView, constant: CGFloat = 0) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.topAnchor.constraint(equalTo: view.bottomAnchor, constant: constant).isActive = true
+        self.heightAnchor.constraint(equalToConstant: self.frame.height).isActive = true
+        self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
+        self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
+    }
+
 }
 
 public enum FadeType: TimeInterval {

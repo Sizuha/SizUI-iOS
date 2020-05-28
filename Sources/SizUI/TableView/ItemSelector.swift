@@ -46,6 +46,16 @@ open class ItemSelector: UIViewController {
         view.addSubview(listView)
     }
     
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard prevSelected >= 0 else { return }
+        
+        DispatchQueue.main.async {
+            let i = IndexPath(row: self.prevSelected, section: 0)
+            self.listView.scrollToRow(at: i, at: .middle, animated: true)
+        }
+    }
+    
     open override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         listView.scaleFill(to: view)
