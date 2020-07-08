@@ -217,3 +217,45 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		}
 	}
 }
+
+// MARK: - SizStringPicker
+
+public class SizStringPicker: SizPopupPickerView {
+    
+    private var strings: [String] = []
+    var onSelected: ((_ index: Int, _ text: String)->Void)? = nil
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    init(strings: [String], onSelected: ((_ index: Int, _ text: String)->Void)? = nil) {
+        super.init()
+        self.strings = strings
+        self.onSelected = onSelected
+        
+        setDataSource(self)
+        delegate = self
+    }
+    
+}
+
+extension SizStringPicker: UIPickerViewDataSource, SizPopupPickerViewDelegate {
+    
+    public func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
+    
+    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        strings.count
+    }
+    
+    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        strings[row]
+    }
+    
+    public func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
+        let index = numbers[0]
+        let text = strings[index]
+        onSelected?(index, text)
+    }
+    
+}
