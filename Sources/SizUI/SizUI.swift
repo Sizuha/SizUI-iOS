@@ -344,9 +344,15 @@ public protocol SizViewUpdater {
 // MARK: - UIScrollView
 
 public extension UIScrollView {
-    func scrollToTopOf(child: UIView, offset: CGFloat) {
-        self.contentOffset = CGPoint(x: 0, y: child.frame.minY - child.frame.height - offset)
+    
+    func scrollToTopOf(child: UIView, offset: CGFloat, x: CGFloat = CGFloat(0) ) {
+        self.contentOffset = CGPoint(x: x, y: child.frame.minY - child.frame.height - offset)
     }
+    
+    func scrollToLeftOf(child: UIView, offset: CGFloat, y: CGFloat = CGFloat(0)) {
+        self.contentOffset = CGPoint(x: child.frame.minX - child.frame.width - offset, y: y)
+    }
+    
 }
 
 //MARK: - Alert Dialog
