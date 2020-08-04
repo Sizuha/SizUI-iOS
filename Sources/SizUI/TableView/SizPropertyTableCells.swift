@@ -346,7 +346,7 @@ open class SizCellForText: SizPropertyTableCell {
     }
     
     public override func refreshViews() {
-        let paddingRight = accessoryType == .none ? DefaultCellPadding.right : 0
+        let paddingRight = accessoryType == .none ? DefaultCellPadding.right : DefaultCellPadding.right/2
         let width: CGFloat
         switch self.valueViewWidth {
         case HALF_WIDTH:
