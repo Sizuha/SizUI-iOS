@@ -8,8 +8,8 @@
 import UIKit
 
 class DefaultCellPadding {
-    static let left = CGFloat(18)
-    static let right = CGFloat(18)
+    static let left = CGFloat(24)
+    static let right = CGFloat(24)
 }
 
 
