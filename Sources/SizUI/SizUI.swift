@@ -189,12 +189,7 @@ public extension UIApplication {
 		return nil
 	}
 	
-	func getKeyWindow() -> UIWindow? {
-		for window in windows {
-			if window.isKeyWindow { return window }
-		}
-		return nil
-	}
+	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
 }
 
 // MARK: - UIView
