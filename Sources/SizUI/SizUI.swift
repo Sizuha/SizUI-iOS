@@ -399,8 +399,8 @@ public extension UIAlertController {
 }
 
 public class SizAlertBuilder {
-	private let alert: UIAlertController
-	private var actions: [UIAlertAction]
+	public let alert: UIAlertController
+	public var actions: [UIAlertAction]
 	
 	public var title: String? {
 		get { return alert.title }
