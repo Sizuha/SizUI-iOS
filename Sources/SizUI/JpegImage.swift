@@ -77,7 +77,7 @@ extension UIImage {
             
             // 撮影日付を記録
             let dtofmt = DateFormatter();
-            dtofmt.locale = .standard
+            dtofmt.locale = Locale(identifier: "en_US_POSIX")
             dtofmt.dateFormat = "yyyy:MM:dd HH:mm:ss"
             exif[kCGImagePropertyExifDateTimeOriginal as String] = dtofmt.string(from: date)
             
@@ -85,14 +85,14 @@ extension UIImage {
             
             // MARK: デバイス情報を記録(TIFF)
             let tiffData = NSMutableDictionary()
-            let modelName = UIDevice().type.rawValue
             tiffData[kCGImagePropertyTIFFMake as String] =  tiff?.maker ?? "Apple"
             
             if let software = tiff?.software {
                 tiffData[kCGImagePropertyTIFFSoftware as String] = software
             }
             
-            tiffData[kCGImagePropertyTIFFModel as String] = tiff?.model ?? UIDevice().type.rawValue
+            let modelName = UIDevice().model
+            tiffData[kCGImagePropertyTIFFModel as String] = tiff?.model ?? modelName
             tiffData[kCGImagePropertyTIFFOrientation as String] = self.imageOrientation.rawValue
             
             // * 画像をiPhoneのアルバムに保存する場合、画像のファイル名は指定できない
