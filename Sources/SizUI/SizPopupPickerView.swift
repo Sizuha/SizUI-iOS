@@ -98,6 +98,15 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 			pickerView.delegate = delegate
 		}
 	}
+    
+    public var dataSource: UIPickerViewDataSource? {
+        get {
+            pickerView.dataSource
+        }
+        set {
+            pickerView.dataSource = newValue
+        }
+    }
 	
 	public var selectedRows: [Int]?
 	
