@@ -128,7 +128,8 @@ public extension UIColor {
 
 // MARK: - UIApplication
 public extension UIApplication {
-	@available(iOS, introduced: 11.0, obsoleted: 13.0, message: "iOS 13で廃止されました")
+    //@available(iOS, introduced: 11.0, obsoleted: 13.0, message: "iOS 13で廃止されました")
+    /// iOS11 ~ iOS12まで有効
 	var statusBarView: UIView? {
 		if responds(to: Selector(("statusBar"))) {
 			return value(forKey: "statusBar") as? UIView
@@ -137,6 +138,42 @@ public extension UIApplication {
 	}
 	
 	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
+}
+
+// MARK: - UIDevice 関連
+
+func getCurrentUILandscapeOrientation(default: UIInterfaceOrientation = .landscapeRight) -> UIInterfaceOrientation {
+    let ori = UIApplication.shared.statusBarOrientation
+    switch ori {
+    case .landscapeLeft:
+        return UIInterfaceOrientation.landscapeLeft // ホームボタンが左
+    case .landscapeRight:
+        return UIInterfaceOrientation.landscapeRight // ホームボタンが右
+    default:
+        return `default`
+    }
+}
+
+func getCurrentDeviceLandscapeOrientation() -> UIInterfaceOrientation {
+    let currOri = UIDevice.current.orientation
+    switch currOri {
+    case .portraitUpsideDown: fallthrough
+    case .portrait: fallthrough
+    case .faceUp: fallthrough
+    case .faceDown:
+        return getCurrentUILandscapeOrientation()
+        
+    default:
+        return UIInterfaceOrientation(rawValue: currOri.rawValue)!
+    }
+}
+
+extension UIDevice {
+    
+    class func setOrientation(_ orientation: UIInterfaceOrientation) {
+        Self.current.setValue(orientation.rawValue, forKey: "orientation")
+    }
+    
 }
 
 // MARK: - UIView
@@ -186,12 +223,6 @@ public extension UIView {
         self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
     }
 
-}
-
-public enum FadeType: TimeInterval {
-	case
-	Normal = 0.2,
-	Slow = 1.0
 }
 
 // MARK: - UIViewController
@@ -547,3 +578,31 @@ public class PinchRect {
 	}
 }
 
+// MARK: - Fade in/out
+
+func fadeOut(fadeView: UIView, parent: UIView, completion: ((Bool)->Void)? = nil) {
+    fadeView.backgroundColor = UIColor.black
+    fadeView.frame = parent.frame
+    
+    let window = UIApplication.shared.getKeyWindow()!
+    window.addSubview(fadeView)
+    
+    fadeView.alpha = 0
+    fadeView.isHidden = false
+    
+    UIView.animate(withDuration: 0.2, animations: {
+        fadeView.alpha = 0.4
+    }, completion: completion)
+}
+
+func fadeIn(fadeView: UIView, completion: ((Bool)->Void)? = nil) {
+    guard !fadeView.isHidden else { return }
+    
+    UIView.animate(withDuration: 0.2, animations: {
+        fadeView.alpha = 0
+    }, completion: { b in
+        fadeView.isHidden = true
+        fadeView.removeFromSuperview()
+        completion?(b)
+    })
+}

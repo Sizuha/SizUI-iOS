@@ -65,11 +65,11 @@ open class SizTableView
 	//MARK: - UITableViewDelegate
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-		print("tableView willSelectRowAt: \(indexPath.section)/\(indexPath.row)")
+		//print("tableView willSelectRowAt: \(indexPath.section)/\(indexPath.row)")
 		return willSelect(rowAt: indexPath)
 	}
 	public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		print("tableView didSelectRowAt: \(indexPath.section)/\(indexPath.row)")
+		//print("tableView didSelectRowAt: \(indexPath.section)/\(indexPath.row)")
 		didSelect(rowAt: indexPath)
 	}
 	

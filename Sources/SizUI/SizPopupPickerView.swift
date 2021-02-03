@@ -158,7 +158,6 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		}
 	}
 	
-	private var fade: UIView!
 	private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
 		
