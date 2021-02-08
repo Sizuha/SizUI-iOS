@@ -3,6 +3,7 @@
 //  
 
 import UIKit
+import CoreMedia
 
 // MARK: - UIImage
 
@@ -31,6 +32,27 @@ public extension UIImage {
         
         guard let data = try? Data(contentsOf: imgUrl) else { return nil }
         self.init(data: data)
+    }
+    
+    /// CMSampleBufferをUIImageに変換する
+    convenience init(withBuffer buffer: CMSampleBuffer) {
+        // サンプルバッファからピクセルバッファを取り出す
+        let pixelBuffer: CVImageBuffer = CMSampleBufferGetImageBuffer(buffer)!
+
+        // ピクセルバッファをベースにCoreImageのCIImageオブジェクトを作成
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
+
+        //CIImageからCGImageを作成
+        let pixelBufferWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
+        let pixelBufferHeight = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
+        let imageRect:CGRect = CGRect(x: 0,y: 0, width: pixelBufferWidth, height: pixelBufferHeight)
+        let ciContext = CIContext()
+        let cgimage = ciContext.createCGImage(ciImage, from: imageRect )!
+
+        // CGImageからUIImageを作成
+        self.init(cgImage: cgimage)
+        //let image = UIImage(cgImage: cgimage)
+        //return image
     }
     
     // Image Resizing
