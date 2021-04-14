@@ -35,29 +35,30 @@ public extension UIImage {
     }
     
     /// CMSampleBufferをUIImageに変換する
-    convenience init(withBuffer buffer: CMSampleBuffer) {
+    convenience init?(withBuffer buffer: CMSampleBuffer) {
         // サンプルバッファからピクセルバッファを取り出す
-        let pixelBuffer: CVImageBuffer = CMSampleBufferGetImageBuffer(buffer)!
+        guard let pixelBuffer: CVImageBuffer = CMSampleBufferGetImageBuffer(buffer) else {
+            return nil
+        }
 
         // ピクセルバッファをベースにCoreImageのCIImageオブジェクトを作成
         let ciImage = CIImage(cvPixelBuffer: pixelBuffer)
 
-        //CIImageからCGImageを作成
+        // CIImageからCGImageを作成
         let pixelBufferWidth = CGFloat(CVPixelBufferGetWidth(pixelBuffer))
         let pixelBufferHeight = CGFloat(CVPixelBufferGetHeight(pixelBuffer))
         let imageRect:CGRect = CGRect(x: 0,y: 0, width: pixelBufferWidth, height: pixelBufferHeight)
         let ciContext = CIContext()
-        let cgimage = ciContext.createCGImage(ciImage, from: imageRect )!
+        guard let cgimage = ciContext.createCGImage(ciImage, from: imageRect) else {
+            return nil
+        }
 
         // CGImageからUIImageを作成
         self.init(cgImage: cgimage)
-        //let image = UIImage(cgImage: cgimage)
-        //return image
     }
     
-    // Image Resizing
-    // https://gist.github.com/marcosgriselli/00ab6c68f48ccaeb110afc82786767ec
-    
+    /// Image Resizing
+    /// https://gist.github.com/marcosgriselli/00ab6c68f48ccaeb110afc82786767ec
     func resized(_ targetSize: CGSize, aspectFit: Bool = true) -> UIImage {
         var newSize: CGSize
         
