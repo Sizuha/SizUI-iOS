@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import AVKit
 
 // MARK: - UIColor
 // Color extention to hex
@@ -128,7 +129,7 @@ public extension UIColor {
 
 // MARK: - UIApplication
 public extension UIApplication {
-    //@available(iOS, introduced: 11.0, obsoleted: 13.0, message: "iOS 13で廃止されました")
+    
     /// iOS11 ~ iOS12まで有効
 	var statusBarView: UIView? {
 		if responds(to: Selector(("statusBar"))) {
@@ -138,43 +139,70 @@ public extension UIApplication {
 	}
 	
 	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
+    
+    func getLandscapeOrientation(default: UIInterfaceOrientation = .landscapeRight) -> UIInterfaceOrientation {
+        let ori = self.statusBarOrientation
+        switch ori {
+        case .landscapeLeft:
+            return UIInterfaceOrientation.landscapeLeft // ホームボタンが左
+        case .landscapeRight:
+            return UIInterfaceOrientation.landscapeRight // ホームボタンが右
+        default:
+            return `default`
+        }
+    }
+    
+    func getPortaitOrientation(default: UIInterfaceOrientation = .portrait) -> UIInterfaceOrientation {
+        let ori = self.statusBarOrientation
+        switch ori {
+        case .portrait:
+            return UIInterfaceOrientation.portrait
+            
+        case .portraitUpsideDown:
+            return UIInterfaceOrientation.portraitUpsideDown
+        
+        default:
+            return `default`
+        }
+    }
+
 }
 
 // MARK: - UIDevice 関連
 
-func getCurrentUILandscapeOrientation(default: UIInterfaceOrientation = .landscapeRight) -> UIInterfaceOrientation {
-    let ori = UIApplication.shared.statusBarOrientation
-    switch ori {
-    case .landscapeLeft:
-        return UIInterfaceOrientation.landscapeLeft // ホームボタンが左
-    case .landscapeRight:
-        return UIInterfaceOrientation.landscapeRight // ホームボタンが右
-    default:
-        return `default`
-    }
-}
-
-func getCurrentDeviceLandscapeOrientation() -> UIInterfaceOrientation {
-    let currOri = UIDevice.current.orientation
-    switch currOri {
-    case .portraitUpsideDown: fallthrough
-    case .portrait: fallthrough
-    case .faceUp: fallthrough
-    case .faceDown:
-        return getCurrentUILandscapeOrientation()
-        
-    default:
-        return UIInterfaceOrientation(rawValue: currOri.rawValue)!
-    }
-}
-
-extension UIDevice {
-    
+public extension UIDevice {
     class func setOrientation(_ orientation: UIInterfaceOrientation) {
         Self.current.setValue(orientation.rawValue, forKey: "orientation")
     }
     
+    func getLandscapeOrientaion() -> UIInterfaceOrientation {
+        switch self.orientation {
+        case .portraitUpsideDown: fallthrough
+        case .portrait: fallthrough
+        case .faceUp: fallthrough
+        case .faceDown:
+            return UIApplication.shared.getLandscapeOrientation()
+            
+        default:
+            return UIInterfaceOrientation(rawValue: self.orientation.rawValue)!
+        }
+    }
 }
+
+// MARK: - UIInterfaceOrientation
+
+extension UIInterfaceOrientation {
+    func toAVCaptureVideoOrientation(default: AVCaptureVideoOrientation = .portrait) -> AVCaptureVideoOrientation {
+        switch self {
+        case .portrait: return AVCaptureVideoOrientation.portrait
+        case .portraitUpsideDown: return AVCaptureVideoOrientation.portraitUpsideDown
+        case .landscapeLeft: return AVCaptureVideoOrientation.landscapeLeft
+        case .landscapeRight: return AVCaptureVideoOrientation.landscapeRight
+        default: return `default`
+        }
+    }
+}
+
 
 // MARK: - UIView
 public extension UIView {
@@ -221,6 +249,35 @@ public extension UIView {
         self.heightAnchor.constraint(equalToConstant: self.frame.height).isActive = true
         self.leftAnchor.constraint(equalTo: parent.leftAnchor).isActive = true
         self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
+    }
+
+    func fadeOut(parent: UIView, completion: ((Bool)->Void)? = nil) {
+        let fadeView = self
+        fadeView.backgroundColor = UIColor.black
+        fadeView.frame = parent.frame
+        
+        let window = UIApplication.shared.getKeyWindow()!
+        window.addSubview(fadeView)
+        
+        fadeView.alpha = 0
+        fadeView.isHidden = false
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            fadeView.alpha = 0.4
+        }, completion: completion)
+    }
+
+    func fadeIn(completion: ((Bool)->Void)? = nil) {
+        let fadeView = self
+        guard !fadeView.isHidden else { return }
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            fadeView.alpha = 0
+        }, completion: { b in
+            fadeView.isHidden = true
+            fadeView.removeFromSuperview()
+            completion?(b)
+        })
     }
 
 }
@@ -576,33 +633,4 @@ public class PinchRect {
 	public func scaleXY(from: PinchRect) -> (CGFloat,CGFloat) {
 		return (self.rect.width / from.rect.width, self.rect.height / from.rect.height)
 	}
-}
-
-// MARK: - Fade in/out
-
-func fadeOut(fadeView: UIView, parent: UIView, completion: ((Bool)->Void)? = nil) {
-    fadeView.backgroundColor = UIColor.black
-    fadeView.frame = parent.frame
-    
-    let window = UIApplication.shared.getKeyWindow()!
-    window.addSubview(fadeView)
-    
-    fadeView.alpha = 0
-    fadeView.isHidden = false
-    
-    UIView.animate(withDuration: 0.2, animations: {
-        fadeView.alpha = 0.4
-    }, completion: completion)
-}
-
-func fadeIn(fadeView: UIView, completion: ((Bool)->Void)? = nil) {
-    guard !fadeView.isHidden else { return }
-    
-    UIView.animate(withDuration: 0.2, animations: {
-        fadeView.alpha = 0
-    }, completion: { b in
-        fadeView.isHidden = true
-        fadeView.removeFromSuperview()
-        completion?(b)
-    })
 }
