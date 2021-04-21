@@ -191,7 +191,7 @@ public extension UIDevice {
 
 // MARK: - UIInterfaceOrientation
 
-extension UIInterfaceOrientation {
+public extension UIInterfaceOrientation {
     func toAVCaptureVideoOrientation(default: AVCaptureVideoOrientation = .portrait) -> AVCaptureVideoOrientation {
         switch self {
         case .portrait: return AVCaptureVideoOrientation.portrait
