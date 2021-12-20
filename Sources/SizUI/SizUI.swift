@@ -634,3 +634,16 @@ public class PinchRect {
 		return (self.rect.width / from.rect.width, self.rect.height / from.rect.height)
 	}
 }
+
+// MARK: - UITabBar
+
+public extension UITabBar {
+    @available(iOS 13.0, *)
+    func removeUpperBorderLine() {
+        let appearance = self.standardAppearance
+        appearance.configureWithOpaqueBackground()
+        appearance.shadowImage = nil
+        appearance.shadowColor = nil
+        self.standardAppearance = appearance
+    }
+}
