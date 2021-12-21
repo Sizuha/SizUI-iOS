@@ -56,13 +56,13 @@ open class SizPopupPickerViewBase: UIView {
 		self.addSubview(pickerToolbar)
 	}
 	
-	public func show() {}
+	open func show() {}
 	
 	@objc func onCancel() {}
 	
 	@objc func endPicker() {}
 	
-	public func hide() {
+	open func hide() {
 		let screenSize = UIScreen.main.bounds.size
 		UIView.animate(withDuration: 0.2, animations: {
 			self.frame = CGRect(x: 0, y: self.parentViewHeight(), width: screenSize.width, height: 260.0)
@@ -71,7 +71,7 @@ open class SizPopupPickerViewBase: UIView {
 		}
 	}
 	
-	public func parentViewHeight() -> CGFloat {
+	open func parentViewHeight() -> CGFloat {
 		return superview?.frame.height ?? UIScreen.main.bounds.size.height
 	}
 }
@@ -82,7 +82,7 @@ public enum SizPopupPickerViewStyle {
 }
 
 @objc public protocol SizPopupPickerViewDelegate: UIPickerViewDelegate {
-	@objc optional func pickerView(pickerView: UIPickerView, didSelect numbers: [Int])
+	@objc optional func pickerView(_ pickerView: UIPickerView, didSelect rows: [Int])
 }
 
 open class SizPopupPickerView: SizPopupPickerViewBase {
@@ -206,7 +206,7 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 	
 	override func endPicker() {
 		hide()
-		delegate?.pickerView?(pickerView: pickerView, didSelect: getSelectedRows())
+		delegate?.pickerView?(pickerView, didSelect: getSelectedRows())
 		selectedRows = nil
 	}
 	
@@ -260,8 +260,8 @@ extension SizStringPicker: UIPickerViewDataSource, SizPopupPickerViewDelegate {
         strings[row]
     }
     
-    public func pickerView(pickerView: UIPickerView, didSelect numbers: [Int]) {
-        let index = numbers[0]
+    public func pickerView(_ pickerView: UIPickerView, didSelect rows: [Int]) {
+        let index = rows[0]
         let text = strings[index]
         onSelected?(index, text)
     }
