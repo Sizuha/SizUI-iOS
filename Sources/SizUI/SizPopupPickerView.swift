@@ -125,8 +125,10 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		onInit()
 	}
 	
-	convenience public init(rows: [Int], style: SizPopupPickerViewStyle = .Default) {
-		self.init()
+	public init(rows: [Int], style: SizPopupPickerViewStyle = .Default) {
+		super.init()
+        onInit()
+        
 		selectedRows = rows
 		
 		if style == .WithSegementedControl {
