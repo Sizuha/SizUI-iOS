@@ -177,7 +177,7 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		pickerView.dataSource = source
 	}
 	
-	override public func show() {
+	override open func show() {
 		if selectedRows == nil {
 			selectedRows = getSelectedRows()
 		}
