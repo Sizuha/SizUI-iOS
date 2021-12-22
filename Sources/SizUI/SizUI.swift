@@ -37,16 +37,32 @@ public extension UIColor {
 		let g = Int(color >> 8) & mask
 		let b = Int(color) & mask
 
-		let red   = CGFloat(r) / 255.0
+		let red = CGFloat(r) / 255.0
 		let green = CGFloat(g) / 255.0
-		let blue  = CGFloat(b) / 255.0
+		let blue = CGFloat(b) / 255.0
 		let alphaCode = startWithAlpha
 			? CGFloat(a) / 255.0
 			: alpha
 		
-		self.init(red:red, green:green, blue:blue, alpha: alphaCode)
+		self.init(red: red, green: green, blue: blue, alpha: alphaCode)
 	}
-	
+    
+    convenience init(argb: Int) {
+        let b = argb & 0xFF
+        let g = (argb >> 8) & 0xFF
+        let r = (argb >> 16) & 0xFF
+        let a = (argb >> 24) & 0xFF
+        self.init(
+            red: CGFloat(r)/255,
+            green: CGFloat(g)/255,
+            blue: CGFloat(b)/255,
+            alpha: CGFloat(a)/255
+        )
+    }
+    
+    /// Hex形式の色コードを返す
+    /// - Parameter withAlpha: Alpha Codeを含む
+    /// - Returns: "#AARRGGBB"
 	func toHexString(withAlpha: Bool = false) -> String {
 		var r:CGFloat = 0
 		var g:CGFloat = 0
@@ -124,6 +140,26 @@ public extension UIColor {
 		}
 		return UIColor.darkGray
 	}
+    
+    /// ARGB形式の色コードを返す
+    /// - Returns: ARGB format
+    func toInt() -> Int? {
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        
+        if self.getRed(&r, green: &g, blue: &b, alpha: &a) {
+            let ir = Int(r * 255.0)
+            let ig = Int(g * 255.0)
+            let ib = Int(b * 255.0)
+            let ia = Int(a * 255.0)
+
+            // format: ARGB
+            return (ia << 24) + (ir << 16) + (ig << 8) + ib
+        }
+        return nil
+    }
 }
 
 
