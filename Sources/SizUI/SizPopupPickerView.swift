@@ -15,7 +15,10 @@ open class SizPopupPickerViewBase: UIView {
 			target: self,
 			action: #selector(self.endPicker))
 	}()
-	
+    
+    public let PICKER_HEIGHT: CGFloat = 260
+    public let TOOLBAR_HEIGHT: CGFloat = 44
+
 	public var onHidden: (()->Void)? = nil
 	
 	public init() {
@@ -41,10 +44,10 @@ open class SizPopupPickerViewBase: UIView {
 		pickerToolbar.isTranslucent = false
 		pickerToolbar.backgroundColor = UIColor.clear
 		
-		self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: 260)
-		self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: 260)
-		pickerToolbar.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: 44)
-		pickerToolbar.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: 44)
+		self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: PICKER_HEIGHT)
+		self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: PICKER_HEIGHT)
+		pickerToolbar.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: TOOLBAR_HEIGHT)
+		pickerToolbar.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: TOOLBAR_HEIGHT)
 		
 		let space = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.fixedSpace, target: nil, action: nil)
 		space.width = 12
@@ -65,7 +68,7 @@ open class SizPopupPickerViewBase: UIView {
 	open func hide() {
 		let screenSize = UIScreen.main.bounds.size
 		UIView.animate(withDuration: 0.2, animations: {
-			self.frame = CGRect(x: 0, y: self.parentViewHeight(), width: screenSize.width, height: 260.0)
+            self.frame = CGRect(x: 0, y: self.parentViewHeight(), width: screenSize.width, height: self.PICKER_HEIGHT)
 		}) { finished in
 			if finished { self.onHidden?() }
 		}
@@ -76,22 +79,14 @@ open class SizPopupPickerViewBase: UIView {
 	}
 }
 
-public enum SizPopupPickerViewStyle {
-	case Default
-	case WithSegementedControl
-}
-
 @objc public protocol SizPopupPickerViewDelegate: UIPickerViewDelegate {
 	@objc optional func pickerView(_ pickerView: UIPickerView, didSelect rows: [Int])
 }
 
 open class SizPopupPickerView: SizPopupPickerViewBase {
 	private var pickerView: UIPickerView!
-	private var segmentedControl: UISegmentedControl?
-	private var segmentedBoard: UIView! = nil
-	
-	private let segementedControlHeight: CGFloat = 29
-	private let segementedControlSuperViewHeight: CGFloat = 29 + 16
+    
+    public func getPickerView() -> UIPickerView { self.pickerView! }
 	
 	public var delegate: SizPopupPickerViewDelegate? {
 		didSet {
@@ -125,40 +120,11 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		onInit()
 	}
 	
-	public init(rows: [Int], style: SizPopupPickerViewStyle = .Default) {
+	public init(selectedRows rows: [Int]) {
 		super.init()
         onInit()
-        
 		selectedRows = rows
-		
-		if style == .WithSegementedControl {
-			let screenSize = UIScreen.main.bounds.size
-			
-			let frame = pickerView.frame
-			pickerView.frame = CGRect(
-				x: frame.origin.x,
-				y: frame.origin.y + segementedControlSuperViewHeight,
-				width: frame.size.width,
-				height: frame.size.height
-			)
-			
-			// Add board view
-			segmentedBoard = UIView(frame: CGRect(x: 0, y: 44, width: screenSize.width, height: segementedControlSuperViewHeight))
-			segmentedBoard.backgroundColor = UIColor.clear
-			self.addSubview(segmentedBoard)
-			
-			let edge = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
-			segmentedControl = UISegmentedControl(frame: CGRect(
-				x: edge.left,
-				y:edge.top,
-				width: screenSize.width - (edge.left + edge.right),
-				height: segementedControlHeight
-			))
-			segmentedControl?.backgroundColor = UIColor.white
-			
-			segmentedBoard.addSubview(segmentedControl!)
-		}
-	}
+    }
 	
 	private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
@@ -170,8 +136,10 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		} else {
 			pickerView.backgroundColor = .white
 		}
-		pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: 216)
-		pickerView.frame = CGRect(x: 0, y: 44, width: screenSize.width, height: 216)
+        
+        let height = PICKER_HEIGHT - TOOLBAR_HEIGHT
+		pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: height)
+		pickerView.frame = CGRect(x: 0, y: TOOLBAR_HEIGHT, width: screenSize.width, height: height)
 		self.addSubview(pickerView)
 	}
 	
@@ -189,13 +157,12 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 			}
 		}
 		let screenSize = UIScreen.main.bounds.size
-		let segmentedControlHeight: CGFloat = (segmentedControl != nil) ? self.segementedControlSuperViewHeight : 0
 		UIView.animate(withDuration: 0.2) {
 			self.frame = CGRect(
 				x: 0,
-				y: self.parentViewHeight() - (260.0 + segmentedControlHeight),
+                y: self.parentViewHeight() - (self.PICKER_HEIGHT),
 				width: screenSize.width,
-				height: 260.0 + segmentedControlHeight
+                height: self.PICKER_HEIGHT
 			)
 		}
 	}
