@@ -23,6 +23,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
     
     public var textField: UITextField!
     public var valueViewWidth: CGFloat = HALF_WIDTH
+    public var pattern: String?
     
     private var contentViewRect: CGRect {
         return CGRect(
@@ -92,7 +93,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
         }
     }
         
-    //--- UITextFieldDelegate ---
+    // MARK: UITextFieldDelegate
     
     // return NO to disallow editing.
     public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
@@ -125,12 +126,21 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
     // return NO to not change text
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         var result = self.delegate?.textField?(textField, shouldChangeCharactersIn: range, replacementString: string) ?? true
+        guard result else { return false }
+        
+        let currStr = textField.text! as NSString
+        let changed = currStr.replacingCharacters(in: range, with: string)
+        let length = changed.count
         
         if self.maxLength > 0 {
-            let currStr = textField.text! as NSString
-            let length = currStr.replacingCharacters(in: range, with: string).count
-
-            result = result && length <= self.maxLength
+            result = length <= self.maxLength
+        }
+        
+        if result,
+            let patternStr = self.pattern,
+            let regx = try? NSRegularExpression(pattern: patternStr, options: [])
+        {
+            result = regx.numberOfMatches(in: changed, options: [], range: NSRange(location: 0, length: changed.count)) > 0
         }
         
         return result
