@@ -39,9 +39,9 @@ func createActions(_ buttons: [ActionButton]) -> [UIAlertAction] {
 
 // MARK: ActionSheet
 public class ActionSheet {
-    let builder: SizAlertBuilder
+    public let builder: SizAlertBuilder
     
-    init(title: String? = nil, message: String? = nil, buttons: [ActionButton] = []) {
+    public init(title: String? = nil, message: String? = nil, buttons: [ActionButton] = []) {
         self.builder = SizAlertBuilder(
             title: title,
             message: message,
@@ -50,22 +50,22 @@ public class ActionSheet {
         self.builder.actions = createActions(buttons)
     }
     
-    /*init(title: String? = nil, message: NSAttributedString, buttons: [ActionButton] = []) {
+    /*public init(title: String? = nil, message: NSAttributedString, buttons: [ActionButton] = []) {
         self.builder = SizAlertBuilder(title: title, style: .actionSheet)
         _ = self.builder.setAttributed(message: message)
         self.builder.actions = createActions(buttons)
     }*/
     
-    func show(from vc: UIViewController, animate: Bool = true, completion: (()->Void)? = nil) {
+    public func show(from vc: UIViewController, animate: Bool = true, completion: (()->Void)? = nil) {
         self.builder.show(parent: vc, animated: animate, completion: completion)
     }
 }
 
 // MARK: Alert
 public class Alert {
-    let builder: SizAlertBuilder
+    public let builder: SizAlertBuilder
     
-    init(title: String? = nil, message: String? = nil, buttons: [ActionButton] = []) {
+    public init(title: String? = nil, message: String? = nil, buttons: [ActionButton] = []) {
         self.builder = SizAlertBuilder(
             title: title,
             message: message,
@@ -74,13 +74,13 @@ public class Alert {
         self.builder.actions = createActions(buttons)
     }
     
-    init(title: String? = nil, message: NSAttributedString, buttons: [ActionButton] = []) {
+    public init(title: String? = nil, message: NSAttributedString, buttons: [ActionButton] = []) {
         self.builder = SizAlertBuilder(title: title, style: .actionSheet)
         _ = self.builder.setAttributed(message: message)
         self.builder.actions = createActions(buttons)
     }
     
-    func show(from vc: UIViewController, animate: Bool = true, completion: (()->Void)? = nil) {
+    public func show(from vc: UIViewController, animate: Bool = true, completion: (()->Void)? = nil) {
         self.builder.show(parent: vc, animated: animate, completion: completion)
     }
 }
