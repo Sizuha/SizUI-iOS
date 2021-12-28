@@ -85,3 +85,25 @@ public class Alert {
     }
 }
 
+// MARK: SwipeAction
+
+@available(iOS 11.0, *)
+public enum SwipeAction {
+    case normal(text: String? = nil, image: UIImage? = nil, bgColor: UIColor? = nil, action: UIContextualAction.Handler)
+    case destructive(text: String? = nil, image: UIImage? = nil, bgColor: UIColor? = nil, action: UIContextualAction.Handler)
+}
+
+@available(iOS 11.0, *)
+public func Swipe(actions: [SwipeAction]) -> UISwipeActionsConfiguration {
+    let builder = SizSwipeActionBuilder()
+    for action in actions {
+        switch action {
+        case .normal(let text, let image, let bgColor, let action):
+            _ = builder.addAction(title: text, image: image, style: .normal, bgColor: bgColor, handler: action)
+
+        case .destructive(let text, let image, let bgColor, let action):
+            _ = builder.addAction(title: text, image: image, style: .destructive, bgColor: bgColor, handler: action)
+        }
+    }
+    return builder.createConfig()
+}
