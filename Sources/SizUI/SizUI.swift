@@ -94,7 +94,10 @@ public enum SwipeAction {
 }
 
 @available(iOS 11.0, *)
-public func Swipe(actions: [SwipeAction]) -> UISwipeActionsConfiguration {
+public func Swipe(
+    firstActionWithFullSwipe enableFullSwipe: Bool = false,
+    actions: [SwipeAction]
+) -> UISwipeActionsConfiguration {
     let builder = SizSwipeActionBuilder()
     for action in actions {
         switch action {
@@ -105,5 +108,5 @@ public func Swipe(actions: [SwipeAction]) -> UISwipeActionsConfiguration {
             _ = builder.addAction(title: text, image: image, style: .destructive, bgColor: bgColor, handler: action)
         }
     }
-    return builder.createConfig()
+    return builder.createConfig(enableFullSwipe: enableFullSwipe)
 }
