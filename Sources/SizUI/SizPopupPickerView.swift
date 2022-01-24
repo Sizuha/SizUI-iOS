@@ -200,13 +200,13 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 public class SizStringPicker: SizPopupPickerView {
     
     private var strings: [String] = []
-    var onSelected: ((_ index: Int, _ text: String)->Void)? = nil
+    public var onSelected: ((_ index: Int, _ text: String)->Void)? = nil
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    init(strings: [String], onSelected: ((_ index: Int, _ text: String)->Void)? = nil) {
+    public init(strings: [String], onSelected: ((_ index: Int, _ text: String)->Void)? = nil) {
         super.init()
         self.strings = strings
         self.onSelected = onSelected

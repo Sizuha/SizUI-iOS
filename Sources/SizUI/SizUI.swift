@@ -86,7 +86,6 @@ public class Alert {
 }
 
 // MARK: SwipeAction
-
 @available(iOS 11.0, *)
 public enum SwipeAction {
     case normal(text: String? = nil, image: UIImage? = nil, bgColor: UIColor? = nil, action: UIContextualAction.Handler)
@@ -109,4 +108,9 @@ public func Swipe(
         }
     }
     return builder.createConfig(enableFullSwipe: enableFullSwipe)
+}
+
+// MARK: PickerView
+public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: String)->Void) -> SizPopupPickerView {
+    SizStringPicker(strings: strings, onSelected: onSelected)
 }
