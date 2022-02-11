@@ -12,20 +12,71 @@ import UIKit
 @available(iOS 9.0, *)
 open class ItemSelector: UIViewController {
     
+    /// インスタンスを生成
+    /// - Parameters:
+    ///   - title: タイトル
+    ///   - items: 選択できる項目（文字列）
+    ///   - selected: 最初から選択せれるもの（index）
+    ///   - onSelected: 選択された時
+    open class func create(
+        title: String,
+        items: [String],
+        selected: Int? = nil,
+        onSelected: @escaping (_ index: Int)->Void
+    ) -> Self {
+        let vc = Self()
+        vc.title = title
+        vc.items = items
+        vc.prevSelected = selected ?? -1
+        vc.onSelected = onSelected
+        return vc
+    }
+    
+    /// 画面を表示する。
+    /// - Parameters:
+    ///   - from: 現在の画面。
+    ///     - UINavigationControllerの場合：ナビゲーションにPushを行う
+    ///     - それ以外：ポップアップで表示
+    ///   - title: タイトル
+    ///   - items: 選択できる項目（文字列）
+    ///   - selected: 最初から選択せれるもの（index）
+    ///   - onSelected: 選択された時
     open class func present(
-        from: UINavigationController,
+        from: UIViewController,
         title: String,
         items: [String],
         selected: Int? = nil,
         onSelected: @escaping (_ index: Int)->Void
     ) {
-        let vc = ItemSelector()
-        vc.title = title
-        vc.items = items
-        vc.prevSelected = selected ?? -1
-        vc.onSelected = onSelected
+        let vc = create(title: title, items: items, selected: selected, onSelected: onSelected)
         
-        from.pushViewController(vc, animated: true)
+        if let navi = from as? UINavigationController {
+            navi.pushViewController(vc, animated: true)
+        }
+        else {
+            vc.modalTransitionStyle = .coverVertical
+            vc.modalPresentationStyle = .formSheet
+            vc.setDisablePullDownDismiss()
+            from.present(vc, animated: true, completion: nil)
+        }
+    }
+    
+    /// 画面を表示する（ナビゲーション上）
+    /// - Parameters:
+    ///   - to:ナビゲーション
+    ///   - title: タイトル
+    ///   - items: 選択できる項目（文字列）
+    ///   - selected: 最初から選択せれるもの（index）
+    ///   - onSelected: 選択された時
+    open class func push(
+        to: UINavigationController,
+        title: String,
+        items: [String],
+        selected: Int? = nil,
+        onSelected: @escaping (_ index: Int)->Void
+    ) {
+        let vc = create(title: title, items: items, selected: selected, onSelected: onSelected)
+        to.pushViewController(vc, animated: true)
     }
 
     private var items: [String] = []
