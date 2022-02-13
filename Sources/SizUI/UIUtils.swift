@@ -176,8 +176,20 @@ public extension UIApplication {
 	
 	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
     
+    var interfaceOrientation: UIInterfaceOrientation? {
+        if #available(iOS 13.0, *) {
+            return self.windows
+                .first?
+                .windowScene?
+                .interfaceOrientation
+        }
+        else {
+            return self.statusBarOrientation
+        }
+    }
+    
     func getLandscapeOrientation(default: UIInterfaceOrientation = .landscapeRight) -> UIInterfaceOrientation {
-        let ori = self.statusBarOrientation
+        let ori = self.interfaceOrientation
         switch ori {
         case .landscapeLeft:
             return UIInterfaceOrientation.landscapeLeft // ホームボタンが左
@@ -189,7 +201,7 @@ public extension UIApplication {
     }
     
     func getPortaitOrientation(default: UIInterfaceOrientation = .portrait) -> UIInterfaceOrientation {
-        let ori = self.statusBarOrientation
+        let ori = self.interfaceOrientation
         switch ori {
         case .portrait:
             return UIInterfaceOrientation.portrait
