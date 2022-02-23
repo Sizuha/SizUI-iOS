@@ -71,8 +71,8 @@ open class SizPropertyTableRow {
 	public init(
 		type: CellType = .text,
 		cellClass: AnyClass? = nil,
-		label: String = "")
-	{
+		label: String = ""
+    ) {
 		self.type = type
 		self.label = label
         

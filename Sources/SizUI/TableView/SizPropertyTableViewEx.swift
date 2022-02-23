@@ -87,7 +87,7 @@ open class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
 		attrs: [SizPropertyTableRow.Attribute] = [])
 	{
 		let cellType = T.cellType
-        super.init(type: cellType, cellClass: T.self, id: Self.cellReuseId, label: label)
+        super.init(type: cellType, cellClass: T.self, label: label)
 		applyAttrs(attrs)
 	}
 	
