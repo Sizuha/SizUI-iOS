@@ -52,7 +52,7 @@ open class SizPropertyTableRow {
 	}
 	
 	let type: CellType
-	let cellClass: AnyClass
+    let cellClass: UITableViewCell.Type
 
 	var label: String = ""
 	var dataSource: (()->Any?)? = nil
@@ -70,7 +70,7 @@ open class SizPropertyTableRow {
 	
 	public init(
 		type: CellType = .text,
-		cellClass: AnyClass? = nil,
+		cellClass: UITableViewCell.Type? = nil,
 		label: String = ""
     ) {
 		self.type = type
@@ -287,7 +287,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			return UITableViewCell()
 		}
         
-        let cellView = cellItem.cellClass.init() as! UITableViewCell
+        let cellView = cellItem.cellClass.init() as UITableViewCell
 		
 		cellView.textLabel?.textColor = cellItem.labelColor ?? UIColor.defaultText
 		
