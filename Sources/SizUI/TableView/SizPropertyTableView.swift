@@ -53,7 +53,6 @@ open class SizPropertyTableRow {
 	
 	let type: CellType
 	let cellClass: AnyClass
-	let viewReuseId: String
 
 	var label: String = ""
 	var dataSource: (()->Any?)? = nil
@@ -72,7 +71,6 @@ open class SizPropertyTableRow {
 	public init(
 		type: CellType = .text,
 		cellClass: AnyClass? = nil,
-		id: String? = nil,
 		label: String = "")
 	{
 		self.type = type
@@ -80,46 +78,31 @@ open class SizPropertyTableRow {
         
         switch type {
         case .text:
-            self.viewReuseId = id ?? "siz_text"
             self.cellClass = SizCellForText.self
         case .editText:
-            self.viewReuseId = id ?? "siz_editText"
             self.cellClass = SizCellForEditText.self
         case .stepper:
-            self.viewReuseId = id ?? "siz_stepper"
             self.cellClass = SizCellForStepper.self
         case .onOff:
-            self.viewReuseId = id ?? "siz_onOff"
             self.cellClass = SizCellForOnOff.self
         case .rating:
-            self.viewReuseId = id ?? "siz_rating"
             self.cellClass = SizCellForRating.self
         case .multiLine:
-            self.viewReuseId = id ?? "siz_multiLine"
             self.cellClass = SizCellForMultiLine.self
         case .button:
-            self.viewReuseId = id ?? "siz_button"
             self.cellClass = SizCellForButton.self
         case .picker:
-            self.viewReuseId = id ?? "siz_picker"
             self.cellClass = SizCellForPicker.self
         case .datetime:
-            self.viewReuseId = id ?? "siz_datetime"
             self.cellClass = SizCellForDateTime.self
         case .image:
-            self.viewReuseId = id ?? "siz_image"
             self.cellClass = SizCellForImage.self
 
         default:
-            guard id != nil else {
-                fatalError("Cell reuse ID is not defined")
-            }
             guard cellClass != nil else {
                 fatalError("Cell class is not defined")
             }
-            
             self.cellClass = cellClass!
-            self.viewReuseId = id!
         }
 	}
 	
@@ -211,26 +194,11 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		allowsSelection = true
 	}
 	
-	private var cellIds = Set<String>()
-	
 	public var autoEndEditing = true
-	
-	public func registerCellIds() {
-		guard let source = self.source else { return }
-		for src in source {
-			for row in src.rows {
-				let cell_id = row.viewReuseId
-				if !cellIds.contains(cell_id) {
-					register(row.cellClass, forCellReuseIdentifier: cell_id)
-				}
-			}
-		}
-	}
 	
 	private var source: [SizPropertyTableSection]? = nil
 	public func setDataSource(_ source: [SizPropertyTableSection]) {
 		self.source = source
-		registerCellIds()
 	}
 	
 	open override func willDisplayHeaderView(view: UIView, section: Int) {
@@ -318,9 +286,8 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			assertionFailure("Wrong Cell")
 			return UITableViewCell()
 		}
-		
-		let cellView = dequeueReusableCell(withIdentifier: cellItem.viewReuseId)
-			?? UITableViewCell()
+        
+        let cellView = cellItem.cellClass.init() as! UITableViewCell
 		
 		cellView.textLabel?.textColor = cellItem.labelColor ?? UIColor.defaultText
 		
