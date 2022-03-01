@@ -37,8 +37,6 @@ class XXXViewController: UIViewController {
 		}
 	}
 }
-
-
 ```
 
 # Alert Dialog
@@ -46,17 +44,32 @@ class XXXViewController: UIViewController {
 import SizUI
 
 // OK, Cancel
-SizAlertBuilder(message: "MESSAGE")
-	.addAction(title: "Cancel", style: .cancel)
-	.addAction(title: "OK", style: .default) { _ in
-		// OKボンタンが押された時の処理
-	}
-	.show(parent: self /* UIViewController */)
+Alert(title: "TITLE", message: "MESSAGE", buttons: [
+    .cancel("キャンセル"),
+    .default("OK") { 
+        // OKボンタンが押された時の処理
+    }
+]).show(from: self /* UIViewController */)
 	
 // OK Only
-SizAlertBuilder(message: "MESSAGE")
-	.addAction(title: "OK")
-	.show(parent: self /* UIViewController */)
+Alert(title: "TITLE", message: "MESSAGE", buttons: [
+    .default("OK") { 
+        // OKボンタンが押された時の処理
+    }
+]).show(from: self /* UIViewController */)
+```
+
+# Action Sheet
+```swift
+ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
+    .default("ACTION1") {
+        // 処理内容
+    },
+    .default("ACTION2") {
+        // 処理内容
+    },
+    .cancel("キャンセル")
+).show(from: self)
 ```
 
 # Loading Indicator
