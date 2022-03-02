@@ -25,8 +25,6 @@ public extension SizPropertyTableSection {
 			switch attr {
 			case .header(let view): self.onCreateHeader = view
 			case .headerHeight(let height): self.headerHeight = height
-				
-			@unknown default: continue
 			}
 		}
 	}
@@ -70,7 +68,6 @@ public extension SizPropertyTableRow {
 			case .hint(let text): hint = text
 			case .valueChanged(let proc): onChanged = proc
 			case .selection(let items): selectionItems = items
-			@unknown default: continue
 			}
 		}
 	}

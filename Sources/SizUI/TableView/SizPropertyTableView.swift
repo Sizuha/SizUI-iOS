@@ -186,6 +186,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		super.init(frame: frame, style: style)
 		onInit()
 	}
+    
 	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 		onInit()
@@ -198,6 +199,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 	}
 	
 	public var autoEndEditing = true
+    public var deselectAfterSelectedRow = false
 	
 	private var source: [SizPropertyTableSection]? = nil
 	public func setDataSource(_ source: [SizPropertyTableSection]) {
@@ -250,14 +252,12 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
         }
         return rowAt
     }
+    
     override open func didSelect(rowAt: IndexPath) {
         if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
-            /*// TODO call show selection picker
-            if cellItem.type == .select {
-                if let cell = cellForRow(at: rowAt) as? SizCellForSelect {
-                    
-                }
-            }*/
+            if self.deselectAfterSelectedRow {
+                self.deselectRow(at: rowAt, animated: true)
+            }
             cellItem.onSelect?(rowAt)
         }
     }
