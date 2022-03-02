@@ -299,7 +299,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
         let cellView = cellItem.cellClass.init() as UITableViewCell
         var labelColor: UIColor = cellItem.labelColor ?? UIColor.defaultText
         var labelText: String? = cellItem.label
-        var secondaryText: String?
 		
 		switch cellItem.type {
 		case .picker:
@@ -367,12 +366,13 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			cellView.accessoryType = cellItem.onSelect != nil
 				? .disclosureIndicator
 				: .none
-			
+            
             if let _ = cellView as? SizPropertyTableCell {
                 // nothing
             }
             else {
-                secondaryText = cellItem.dataSource?() as? String ?? ""
+                cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
+                cellView.detailTextLabel?.textColor = cellItem.textColor
             }
 		}
         
@@ -381,21 +381,19 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
             
             content.text = labelText
             content.textProperties.color = labelColor
-            
-            content.secondaryText = secondaryText
-            if let color = cellItem.textColor {
-                content.secondaryTextProperties.color = color
-            }
-            
             cellView.contentConfiguration = content
         }
         else {
             cellView.textLabel?.text = labelText
             cellView.textLabel?.textColor = labelColor
-            cellView.detailTextLabel?.text = secondaryText
-            cellView.detailTextLabel?.textColor = cellItem.textColor
         }
-		
+        
+        if let textCell = cellView as? SizCellForText {
+            if let textColor = cellItem.textColor {
+                textCell.valueLabel?.textColor = cellItem.textColor
+            }
+        }
+
 		cellView.selectionStyle = cellItem.onSelect != nil ? .default : .none
 		if let sizCell = cellView as? SizPropertyTableCell {
 			sizCell.onGetCellHieght = cellItem.height

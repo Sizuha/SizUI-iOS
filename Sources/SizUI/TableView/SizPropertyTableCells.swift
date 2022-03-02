@@ -27,6 +27,7 @@ public extension UITableViewCell {
         if #available(iOS 14.0, *) {
             if var content = self.contentConfiguration as? UIListContentConfiguration {
                 content.text = text
+                self.contentConfiguration = content
                 return
             }
         }
@@ -37,6 +38,7 @@ public extension UITableViewCell {
         if #available(iOS 14.0, *) {
             if var content = self.contentConfiguration as? UIListContentConfiguration {
                 content.secondaryText = text
+                self.contentConfiguration = content
                 return
             }
         }
@@ -362,10 +364,10 @@ open class SizCellForText: SizPropertyTableCell {
     
     open override class var cellType: SizPropertyTableRow.CellType { .text }
     
-//    var valueLabel: UILabel!
-//    open override var detailTextLabel: UILabel? {
-//        return valueLabel
-//    }
+    public var valueLabel: UILabel!
+    open override var detailTextLabel: UILabel? {
+        return valueLabel
+    }
     
     public var valueViewWidth: CGFloat = HALF_WIDTH
     
@@ -381,27 +383,14 @@ open class SizCellForText: SizPropertyTableCell {
     open override func onInit() {
         super.onInit()
         
-        if #available(iOS 14.0, *) {
-            var content = self.defaultContentConfiguration()
-            content.secondaryTextProperties.lineBreakMode = .byTruncatingTail
-            content.secondaryTextProperties.color = .inputText
-            self.contentConfiguration = content
-        }
-        else {
-            let valueLabel = self.detailTextLabel
-            valueLabel?.textAlignment = .right
-            valueLabel?.textColor = .inputText
-            valueLabel?.lineBreakMode = .byTruncatingTail
-        }
-        
-//        self.valueLabel = UILabel(frame: .zero)
-//        self.valueLabel.textAlignment = .right
-//        self.valueLabel.textColor = .inputText
-//        self.valueLabel.lineBreakMode = .byTruncatingTail
-//        addSubview(self.valueLabel)
+        self.valueLabel = UILabel(frame: .zero)
+        self.valueLabel.textAlignment = .right
+        self.valueLabel.textColor = .inputText
+        self.valueLabel.lineBreakMode = .byTruncatingTail
+        addSubview(self.valueLabel)
     }
     
-    /*public override func refreshViews() {
+    public override func refreshViews() {
         let paddingRight = accessoryType == .none ? DefaultCellPadding.right : DefaultCellPadding.right/2
         let width: CGFloat
         switch self.valueViewWidth {
@@ -417,19 +406,11 @@ open class SizCellForText: SizPropertyTableCell {
             width: width - paddingRight,
             height: contentView.frame.size.height
         )
-    }*/
+    }
     
     open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
         let text = data as? String ?? ""
-        
-        if #available(iOS 14.0, *) {
-            var content = self.defaultContentConfiguration()
-            content.secondaryText = text
-            self.contentConfiguration = content
-        }
-        else {
-            self.detailTextLabel?.text = text
-        }
+        self.valueLabel?.text = text
     }
 }
 
@@ -769,10 +750,10 @@ open class SizCellForStrings: SizCellForText {
             let items = row.selectionItems,
             (0..<items.count).contains(i)
         else {
-            setDetailLabelText(self.nonSelectedMessage)
+            self.valueLabel?.text = self.nonSelectedMessage
             return
         }
         
-        setDetailLabelText(items[i])
+        self.valueLabel?.text = items[i]
     }
 }
