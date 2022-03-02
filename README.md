@@ -72,6 +72,19 @@ ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
 ).show(from: self)
 ```
 
+# Swipe Action
+```swift
+func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+	let i = indexPath.row
+	return Swipe(actions: [
+		.destructive(text: "削除", image: nil, bgColor: .systemRed, action: { action, view, handler in
+			self.tryRemove(i) // 処理内容
+		})
+	])
+}
+```
+
+
 # Loading Indicator
 ```swift
 // ローティング表示
