@@ -426,14 +426,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
         return subTextView
     }
     
-    private var subHintView: UILabel!
-    public var placeholderView: UILabel {
-        return subHintView
-    }
-    
     public func setEnableEdit(_ mode: Bool = true) {
-        self.subHintView.isHidden = mode
-        
         self.subTextView.isEditable = mode
         self.subTextView.isUserInteractionEnabled = mode
         self.subTextView.isScrollEnabled = mode
@@ -457,19 +450,6 @@ open class SizCellForMultiLine: SizPropertyTableCell {
         
         self.subTextView = textView
         self.addSubview(textView)
-        
-        let placeholderView = UILabel()
-        placeholderView.isUserInteractionEnabled = false
-        
-        if #available(iOS 13.0, *) {
-            placeholderView.textColor = .placeholderText
-        } else {
-            placeholderView.textColor = .placeholderGray
-        }
-        
-        placeholderView.font = textView.font
-        self.subHintView = placeholderView
-        self.addSubview(placeholderView)
         
         setEnableEdit(false)
     }
@@ -502,16 +482,6 @@ open class SizCellForMultiLine: SizPropertyTableCell {
             width: editWidth,
             height: height - SizCellForMultiLine.paddingVertical*2
         )
-        
-        subHintView.isHidden = !self.textView.text.isEmpty || self.subTextView.isEditable
-        if !subHintView.isHidden {
-            subHintView.frame = CGRect(
-                x: DefaultCellPadding.left,
-                y: (height - self.defaultRowHeight)/2,
-                width: contentView.frame.width / 2,
-                height: self.defaultRowHeight
-            )
-        }
     }
     
     open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
@@ -533,10 +503,10 @@ open class SizCellForMultiLine: SizPropertyTableCell {
     
     public var placeholder: String? {
         get {
-            return self.subHintView.text
+            getLabelText()
         }
         set(value) {
-            self.subHintView.text = value
+            setLabelText(value)
         }
     }
     
