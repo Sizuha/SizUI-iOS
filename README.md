@@ -75,11 +75,10 @@ ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
 # Swipe Action
 ```swift
 func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-	let i = indexPath.row
-	return Swipe(actions: [
-		.destructive(text: "削除", image: nil, bgColor: .systemRed, action: { action, view, handler in
-			self.tryRemove(i) // 処理内容
-		})
+	Swipe(actions: [
+		.destructive(text: "削除", image: nil, bgColor: .systemRed) { action, view, handler in
+			// 処理内容
+		}
 	])
 }
 ```
