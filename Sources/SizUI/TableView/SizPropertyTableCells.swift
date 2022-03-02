@@ -482,6 +482,13 @@ open class SizCellForMultiLine: SizPropertyTableCell {
             width: editWidth,
             height: height - SizCellForMultiLine.paddingVertical*2
         )
+        
+        if self.subTextView.text?.isEmpty ?? true {
+            setLabelText(self.placeholder)
+        }
+        else {
+            setLabelText(nil)
+        }
     }
     
     open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
