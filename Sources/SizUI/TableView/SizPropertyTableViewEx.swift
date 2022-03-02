@@ -98,7 +98,6 @@ public typealias TextCell = TableCellDefineBase<SizCellForText>
 public typealias EditTextCell = TableCellDefineBase<SizCellForEditText>
 public typealias OnOffCell = TableCellDefineBase<SizCellForOnOff>
 public typealias PickerCell = TableCellDefineBase<SizCellForPicker>
-public typealias RatingCell = TableCellDefineBase<SizCellForRating>
 public typealias ButtonCell = TableCellDefineBase<SizCellForButton>
 public typealias StepperCell = TableCellDefineBase<SizCellForStepper>
 public typealias DateTimeCell = TableCellDefineBase<SizCellForDateTime>

@@ -544,55 +544,6 @@ open class SizCellForMultiLine: SizPropertyTableCell {
     open override var detailTextLabel: UILabel? { return nil }
 }
 
-//MARK: - Cell: Star Rating
-open class SizCellForRating: SizPropertyTableCell, FloatRatingViewDelegate {
-    
-    open override class var cellType: SizPropertyTableRow.CellType { .rating }
-    
-    private var ratingView: FloatRatingView!
-    public var ratingBar: FloatRatingView { return self.ratingView }
-    
-    public var delegate: FloatRatingViewDelegate? = nil
-    
-    open override func onInit() {
-        super.onInit()
-        self.ratingView = FloatRatingView(frame: .zero)
-        self.ratingView.editable = true
-        self.ratingView.type = .wholeRatings
-        self.ratingView.minRating = 0
-        self.ratingView.maxRating = 5
-        addSubview(self.ratingView)
-        
-        self.ratingView.delegate = self
-    }
-    
-    public override func refreshViews() {
-        let width = CGFloat(180)
-        let height = CGFloat(34)
-        self.ratingView.frame = CGRect(
-            x: contentView.frame.size.width - width - DefaultCellPadding.right,
-            y: (contentView.frame.size.height - height)/2,
-            width: width,
-            height: height
-        )
-    }
-    
-    open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
-        ratingBar.rating = data as? Double ?? 0.0
-    }
-    
-    /// Returns the rating value when touch events end
-    public func floatRatingView(_ ratingView: FloatRatingView, didUpdate rating: Double) {
-        self.delegate?.floatRatingView?(ratingView, didUpdate: rating)
-        onValueChanged?(rating)
-    }
-    
-    /// Returns the rating value as the user pans
-    public func floatRatingView(_ ratingView: FloatRatingView, isUpdating rating: Double) {
-        self.delegate?.floatRatingView?(ratingView, isUpdating: rating)
-    }
-}
-
 //MARK: - Cell: Button
 open class SizCellForButton: SizPropertyTableCell {
     

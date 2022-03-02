@@ -6,7 +6,6 @@
 
 import UIKit
 
-
 public let AUTO_HEIGHT: CGFloat = -1
 public let DEFAULT_HEIGHT: CGFloat = -1
 public let FILL_WIDTH: CGFloat = -10
@@ -41,7 +40,6 @@ open class SizPropertyTableRow {
 		editText,
 		onOff,
 		picker,
-		rating,
 		multiLine,
 		button,
 		stepper,
@@ -85,8 +83,6 @@ open class SizPropertyTableRow {
             self.cellClass = SizCellForStepper.self
         case .onOff:
             self.cellClass = SizCellForOnOff.self
-        case .rating:
-            self.cellClass = SizCellForRating.self
         case .multiLine:
             self.cellClass = SizCellForMultiLine.self
         case .button:
@@ -348,10 +344,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			
 		case .onOff:
             //guard let cell = cellView as? SizCellForOnOff else { break }
-            break
-			
-		case .rating:
-            //guard let cell = cellView as? SizCellForRating else { break }
             break
 			
 		case .multiLine:
