@@ -76,7 +76,7 @@ ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
 ```swift
 func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 	Swipe(actions: [
-		.destructive(text: "削除", image: nil, bgColor: .systemRed) { action, view, handler in
+		.destructive(image: UIImage(systemName: "trash")) { action, view, handler in
 			// 処理内容
 		}
 	])
