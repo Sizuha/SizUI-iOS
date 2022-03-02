@@ -203,7 +203,16 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 	
 	open override func willDisplayHeaderView(view: UIView, section: Int) {
 		if let header = view as? UITableViewHeaderFooterView {
-			header.textLabel?.text = tableView(self, titleForHeaderInSection: section)
+            let text = tableView(self, titleForHeaderInSection: section)
+            
+            if #available(iOS 14.0, *) {
+                var content = header.defaultContentConfiguration()
+                content.text = text
+                header.contentConfiguration = content
+            }
+            else {
+                header.textLabel?.text = text
+            }
 		}
 	}
     
@@ -288,8 +297,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		}
         
         let cellView = cellItem.cellClass.init() as UITableViewCell
-		
-		cellView.textLabel?.textColor = cellItem.labelColor ?? UIColor.defaultText
+        var labelColor: UIColor = cellItem.labelColor ?? UIColor.defaultText
+        var labelText: String? = cellItem.label
+        var secondaryText: String?
 		
 		switch cellItem.type {
 		case .picker:
@@ -299,7 +309,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			cell.selectionTitles = cellItem.selectionItems
             cell.placeholder = cellItem.hint
             if !cellItem.label.isEmpty {
-                cell.textLabel?.text = cellItem.label
                 cell.textField.textAlignment = .right
                 if let textColor = cellItem.textColor {
                     cell.textField.textColor = textColor
@@ -308,6 +317,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 
 		case .editText:
             guard let cell = cellView as? SizCellForEditText else { break }
+            labelText = nil
             cell.placeholder = cellItem.hint
 			
 		case .datetime:
@@ -315,7 +325,6 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
             cell.placeholder = cellItem.hint
             
             if !cellItem.label.isEmpty {
-                cell.textLabel?.text = cellItem.label
                 cell.textField.textAlignment = .right
                 if let textColor = cellItem.textColor {
                     cell.textField.textColor = textColor
@@ -332,17 +341,14 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
                 cell.textField.textColor = textColor
             }
 
-            cell.textLabel?.text = cellItem.label
             cell.stepper.tintColor = cellItem.tintColor ?? self.tintColor
 			
 			
 		case .onOff:
             guard let cell = cellView as? SizCellForOnOff else { break }
-            cell.textLabel?.text = cellItem.label
 			
 		case .rating:
             guard let cell = cellView as? SizCellForRating else { break }
-            cell.textLabel?.text = cellItem.label
 			
 		case .multiLine:
 			cellView.accessoryType = cellItem.onSelect != nil
@@ -351,8 +357,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
             //guard let cell = cellView as? SizCellForMultiLine else { break }
 			
 		case .button:
-			cellView.textLabel?.text = cellItem.label
-			cellView.textLabel?.textColor = cellItem.tintColor ?? self.tintColor
+            labelColor = cellItem.tintColor ?? self.tintColor
             
         case .image: fallthrough
         case .custom: fallthrough
@@ -363,18 +368,33 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 				? .disclosureIndicator
 				: .none
 			
-			cellView.textLabel?.text = cellItem.label
-			if let textColor = cellItem.textColor {
-				cellView.detailTextLabel?.textColor = textColor
-			}
-            
             if let _ = cellView as? SizPropertyTableCell {
                 // nothing
             }
             else {
-                cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
+                secondaryText = cellItem.dataSource?() as? String ?? ""
             }
 		}
+        
+        if #available(iOS 14.0, *) {
+            var content = cellView.defaultContentConfiguration()
+            
+            content.text = labelText
+            content.textProperties.color = labelColor
+            
+            content.secondaryText = secondaryText
+            if let color = cellItem.textColor {
+                content.secondaryTextProperties.color = color
+            }
+            
+            cellView.contentConfiguration = content
+        }
+        else {
+            cellView.textLabel?.text = labelText
+            cellView.textLabel?.textColor = labelColor
+            cellView.detailTextLabel?.text = secondaryText
+            cellView.detailTextLabel?.textColor = cellItem.textColor
+        }
 		
 		cellView.selectionStyle = cellItem.onSelect != nil ? .default : .none
 		if let sizCell = cellView as? SizPropertyTableCell {

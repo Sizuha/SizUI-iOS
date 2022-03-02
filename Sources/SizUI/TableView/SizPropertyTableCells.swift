@@ -12,6 +12,34 @@ class DefaultCellPadding {
     static let right = CGFloat(24)
 }
 
+public extension UITableViewCell {
+    
+    func getLabelText() -> String? {
+        if #available(iOS 14.0, *) {
+            return self.defaultContentConfiguration().text
+        }
+        return self.textLabel?.text
+    }
+    
+    func setLabelText(_ text: String?) {
+        if #available(iOS 14.0, *) {
+            var content = self.defaultContentConfiguration()
+            content.text = text
+            self.contentConfiguration = content
+        }
+        self.textLabel?.text = text
+    }
+    
+    func setDetailLabelText(_ text: String?) {
+        if #available(iOS 14.0, *) {
+            var content = self.defaultContentConfiguration()
+            content.secondaryText = text
+            self.contentConfiguration = content
+        }
+        self.detailTextLabel?.text = text
+    }
+    
+}
 
 //MARK: - Cell: Edit Text
 open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
@@ -60,7 +88,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
             ? DefaultCellPadding.right
             : DefaultCellPadding.right/2
         
-        if textLabel?.text?.isEmpty ?? true {
+        if getLabelText()?.isEmpty ?? true {
             width = contentView.frame.size.width - DefaultCellPadding.left - rightPadding
             x = DefaultCellPadding.left
         }
@@ -85,7 +113,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
     open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
         textValue = data as? String ?? ""
         if !row.label.isEmpty {
-            textLabel?.text = row.label
+            setLabelText(row.label)
             textField.textAlignment = .right
             if let textColor = row.textColor {
                 textField.textColor = textColor
@@ -330,10 +358,10 @@ open class SizCellForText: SizPropertyTableCell {
     
     open override class var cellType: SizPropertyTableRow.CellType { .text }
     
-    private var valueLabel: UILabel!
-    open override var detailTextLabel: UILabel? {
-        return valueLabel
-    }
+//    var valueLabel: UILabel!
+//    open override var detailTextLabel: UILabel? {
+//        return valueLabel
+//    }
     
     public var valueViewWidth: CGFloat = HALF_WIDTH
     
@@ -348,14 +376,28 @@ open class SizCellForText: SizPropertyTableCell {
     
     open override func onInit() {
         super.onInit()
-        self.valueLabel = UILabel(frame: .zero)
-        self.valueLabel.textAlignment = .right
-        self.valueLabel.textColor = .inputText
-        self.valueLabel.lineBreakMode = .byTruncatingTail
-        addSubview(self.valueLabel)
+        
+        if #available(iOS 14.0, *) {
+            var content = self.defaultContentConfiguration()
+            content.secondaryTextProperties.lineBreakMode = .byTruncatingTail
+            content.secondaryTextProperties.color = .inputText
+            self.contentConfiguration = content
+        }
+        else {
+            let valueLabel = self.detailTextLabel
+            valueLabel?.textAlignment = .right
+            valueLabel?.textColor = .inputText
+            valueLabel?.lineBreakMode = .byTruncatingTail
+        }
+        
+//        self.valueLabel = UILabel(frame: .zero)
+//        self.valueLabel.textAlignment = .right
+//        self.valueLabel.textColor = .inputText
+//        self.valueLabel.lineBreakMode = .byTruncatingTail
+//        addSubview(self.valueLabel)
     }
     
-    public override func refreshViews() {
+    /*public override func refreshViews() {
         let paddingRight = accessoryType == .none ? DefaultCellPadding.right : DefaultCellPadding.right/2
         let width: CGFloat
         switch self.valueViewWidth {
@@ -371,10 +413,19 @@ open class SizCellForText: SizPropertyTableCell {
             width: width - paddingRight,
             height: contentView.frame.size.height
         )
-    }
+    }*/
     
     open override func updateContent(data: Any?, at row: SizPropertyTableRow) {
-        detailTextLabel?.text = data as? String ?? ""
+        let text = data as? String ?? ""
+        
+        if #available(iOS 14.0, *) {
+            var content = self.defaultContentConfiguration()
+            content.secondaryText = text
+            self.contentConfiguration = content
+        }
+        else {
+            self.detailTextLabel?.text = text
+        }
     }
 }
 
@@ -564,7 +615,12 @@ open class SizCellForButton: SizPropertyTableCell {
     
     open override func onInit() {
         super.onInit()
-        textLabel?.textAlignment = .left
+        if #available(iOS 14.0, *) {
+            // nothing
+        }
+        else {
+            textLabel?.textAlignment = .left
+        }
     }
     
     public override func refreshViews() {}
@@ -709,10 +765,10 @@ open class SizCellForStrings: SizCellForText {
             let items = row.selectionItems,
             (0..<items.count).contains(i)
         else {
-            detailTextLabel?.text = nonSelectedMessage
+            setDetailLabelText(self.nonSelectedMessage)
             return
         }
         
-        detailTextLabel?.text = items[i]
+        setDetailLabelText(items[i])
     }
 }
