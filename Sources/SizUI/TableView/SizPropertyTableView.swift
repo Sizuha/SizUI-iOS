@@ -160,6 +160,7 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentConfiguration = self.defaultContentConfiguration()
 		onInit()
 	}
 	public required init?(coder aDecoder: NSCoder) {
@@ -344,10 +345,12 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 			
 			
 		case .onOff:
-            guard let cell = cellView as? SizCellForOnOff else { break }
+            //guard let cell = cellView as? SizCellForOnOff else { break }
+            break
 			
 		case .rating:
-            guard let cell = cellView as? SizCellForRating else { break }
+            //guard let cell = cellView as? SizCellForRating else { break }
+            break
 			
 		case .multiLine:
 			cellView.accessoryType = cellItem.onSelect != nil
@@ -377,7 +380,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		}
         
         if #available(iOS 14.0, *) {
-            var content = cellView.defaultContentConfiguration()
+            var content = cellView.contentConfiguration ?? defaultContentConfiguration()
             
             content.text = labelText
             content.textProperties.color = labelColor
@@ -390,7 +393,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
         
         if let textCell = cellView as? SizCellForText {
             if let textColor = cellItem.textColor {
-                textCell.valueLabel?.textColor = cellItem.textColor
+                textCell.valueLabel?.textColor = textColor
             }
         }
 
