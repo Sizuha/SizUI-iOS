@@ -160,7 +160,9 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.contentConfiguration = self.defaultContentConfiguration()
+        if #available(iOS 14.0, *) {
+            self.contentConfiguration = self.defaultContentConfiguration()
+        }
 		onInit()
 	}
 	public required init?(coder aDecoder: NSCoder) {
@@ -380,7 +382,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		}
         
         if #available(iOS 14.0, *) {
-            var content = cellView.contentConfiguration ?? defaultContentConfiguration()
+            var content = (cellView.contentConfiguration ?? cellView.defaultContentConfiguration()) as! UIListContentConfiguration
             
             content.text = labelText
             content.textProperties.color = labelColor
