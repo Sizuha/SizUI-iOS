@@ -16,25 +16,29 @@ public extension UITableViewCell {
     
     func getLabelText() -> String? {
         if #available(iOS 14.0, *) {
-            return self.defaultContentConfiguration().text
+            if let content = self.contentConfiguration as? UIListContentConfiguration {
+                return content.text
+            }
         }
         return self.textLabel?.text
     }
     
     func setLabelText(_ text: String?) {
         if #available(iOS 14.0, *) {
-            var content = self.defaultContentConfiguration()
-            content.text = text
-            self.contentConfiguration = content
+            if var content = self.contentConfiguration as? UIListContentConfiguration {
+                content.text = text
+                return
+            }
         }
         self.textLabel?.text = text
     }
     
     func setDetailLabelText(_ text: String?) {
         if #available(iOS 14.0, *) {
-            var content = self.defaultContentConfiguration()
-            content.secondaryText = text
-            self.contentConfiguration = content
+            if var content = self.contentConfiguration as? UIListContentConfiguration {
+                content.secondaryText = text
+                return
+            }
         }
         self.detailTextLabel?.text = text
     }
