@@ -72,6 +72,18 @@ ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
 ).show(from: self)
 ```
 
+# Swipe Action
+```swift
+func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+	Swipe(actions: [
+		.destructive(image: UIImage(systemName: "trash")) { action, view, handler in
+			// 処理内容
+		}
+	])
+}
+```
+
+
 # Loading Indicator
 ```swift
 // ローティング表示
