@@ -16,13 +16,16 @@ open class SizPopupPickerViewBase: UIView {
 			action: #selector(self.endPicker))
 	}()
     
-    public let PICKER_HEIGHT: CGFloat = 260
-    public let TOOLBAR_HEIGHT: CGFloat = 44
+    public static let PADDING_BOTTOM: CGFloat = 20
+    var PICKER_HEIGHT: CGFloat = 260
+    let TOOLBAR_HEIGHT: CGFloat = 44
 
 	public var onHidden: (()->Void)? = nil
 	
 	public init() {
 		super.init(frame: CGRect.zero)
+        
+        PICKER_HEIGHT += Self.PADDING_BOTTOM
 		onInit()
 	}
 	
@@ -137,7 +140,7 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 			pickerView.backgroundColor = .white
 		}
         
-        let height = PICKER_HEIGHT - TOOLBAR_HEIGHT
+        let height = PICKER_HEIGHT - TOOLBAR_HEIGHT - Self.PADDING_BOTTOM
 		pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: height)
 		pickerView.frame = CGRect(x: 0, y: TOOLBAR_HEIGHT, width: screenSize.width, height: height)
 		self.addSubview(pickerView)

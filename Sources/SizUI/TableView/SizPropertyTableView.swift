@@ -32,6 +32,7 @@ open class SizPropertyTableSection {
 
 public typealias TableViewIndexProc = (_ index: IndexPath)->Void
 public typealias TableViewCellProc = (UITableViewCell, IndexPath)->Void
+public typealias TableSection = SizPropertyTableSection
 
 open class SizPropertyTableRow {
 	public enum CellType {

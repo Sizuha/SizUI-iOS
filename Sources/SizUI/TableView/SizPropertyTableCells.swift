@@ -483,7 +483,7 @@ open class SizCellForMultiLine: SizPropertyTableCell {
             height: height - SizCellForMultiLine.paddingVertical*2
         )
         
-        if self.subTextView.text?.isEmpty ?? true {
+        if !self.subTextView.isEditable && self.subTextView.text?.isEmpty ?? true {
             setLabelText(self.placeholder)
         }
         else {
