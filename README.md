@@ -161,7 +161,11 @@ sections.append(SizPropertyTableSection(title: "Section A", rows: [
 		.created { cell: UITableViewCell, index: IndexPath in
 			// Cellが生成された時
 			let cell = TextCell.cellView(cell)
-			cell.contentConfiguration
+			
+			// iOS 14以上の場合
+			var content = cell.contentConfiguration as! UIListContentConfiguration
+        	content.textProperties.color = .systemRed
+			cell.contentConfiguration = content
 		},
 		.valueChanged { value: Any in
 			// 入力可能なCellの場合、入力した内容が変化した時
