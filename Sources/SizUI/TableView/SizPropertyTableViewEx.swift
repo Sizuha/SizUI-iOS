@@ -41,10 +41,11 @@ public extension SizPropertyTableRow {
 		case tintColor(_ color: UIColor)
 		
 		case height(_ function: ()->CGFloat)
-		case read(_ function: ()->Any?)
 		case created(_ proc: TableViewCellProc)
 		case selected(_ proc: TableViewIndexProc)
 		case willDisplay(_ proc: TableViewCellProc)
+        
+        case value(_ function: ()->String?)
 		
 		// for Edit Ctrl
 		case hint(_ text: String)
@@ -61,7 +62,9 @@ public extension SizPropertyTableRow {
 			case .textColor(let color): textColor = color
 			case .tintColor(let color): tintColor = color
 			case .height(let proc): height = proc
-			case .read(let function): dataSource = function
+			
+            case .value(let function): dataString = function
+            
 			case .created(let proc): onCreate = proc
 			case .selected(let proc): onSelect = proc
 			case .willDisplay(let proc): onWillDisplay = proc

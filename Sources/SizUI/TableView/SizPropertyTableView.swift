@@ -32,7 +32,6 @@ open class SizPropertyTableSection {
 
 public typealias TableViewIndexProc = (_ index: IndexPath)->Void
 public typealias TableViewCellProc = (UITableViewCell, IndexPath)->Void
-public typealias TableSection = SizPropertyTableSection
 
 open class SizPropertyTableRow {
 	public enum CellType {
@@ -54,13 +53,14 @@ open class SizPropertyTableRow {
     let cellClass: UITableViewCell.Type
 
 	var label: String = ""
-	var dataSource: (()->Any?)? = nil
 	var hint: String = ""
 	var labelColor: UIColor? = nil
 	var textColor: UIColor? = nil
 	var tintColor: UIColor? = nil
 	var height: (()->CGFloat)? = nil
 	var selectionItems: [String]? = nil
+    
+    var dataString: (()->String?)? = nil
 	
 	public var onSelect: TableViewIndexProc? = nil
 	public var onCreate: TableViewCellProc? = nil
@@ -111,8 +111,8 @@ open class SizPropertyTableRow {
 		self.label = text
 		return self
 	}
-	public func dataSource(_ sourceFrom: (()->Any?)? = nil) -> Self {
-		self.dataSource = sourceFrom
+	public func value(_ sourceFrom: (()->String?)? = nil) -> Self {
+		self.dataString = sourceFrom
 		return self
 	}
 	public func selection(items: [String]) -> Self {
@@ -231,7 +231,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
     
     override open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
         if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
-            (cell as? SizPropertyTableCell)?.updateContent(data: cellItem.dataSource?(), at: cellItem)
+            (cell as? SizPropertyTableCell)?.updateContent(data: cellItem.dataString?(), at: cellItem)
             
             if let onWillDisplay = cellItem.onWillDisplay {
                 onWillDisplay(cell, rowAt)
@@ -369,7 +369,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
                 // nothing
             }
             else {
-                cellView.detailTextLabel?.text = cellItem.dataSource?() as? String ?? ""
+                cellView.detailTextLabel?.text = cellItem.dataString?() ?? ""
                 cellView.detailTextLabel?.textColor = cellItem.textColor
             }
 		}
