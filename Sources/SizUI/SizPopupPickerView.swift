@@ -16,7 +16,7 @@ open class SizPopupPickerViewBase: UIView {
 			action: #selector(self.endPicker))
 	}()
     
-    public static let PADDING_BOTTOM: CGFloat = 20
+    public static var PADDING_BOTTOM: CGFloat = 40
     var PICKER_HEIGHT: CGFloat = 260
     let TOOLBAR_HEIGHT: CGFloat = 44
 
@@ -41,7 +41,7 @@ open class SizPopupPickerViewBase: UIView {
 	
 	private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
-		self.backgroundColor = UIColor.black
+		//self.backgroundColor = UIColor.black
 		
 		pickerToolbar = UIToolbar()
 		pickerToolbar.isTranslucent = false
