@@ -62,6 +62,7 @@ open class SizPropertyTableRow {
     
     var dataString: (()->String?)? = nil
     var dataBoolean: (()->Bool)? = nil
+    var dataInt: (()->Int)? = nil
     var dataDouble: (()->Double)? = nil
 	
 	public var onSelect: TableViewIndexProc? = nil
@@ -111,6 +112,10 @@ open class SizPropertyTableRow {
     }
     public func valueBoolean(_ sourceFrom: (()->Bool)? = nil) -> Self {
         self.dataBoolean = sourceFrom
+        return self
+    }
+    public func valueInt(_ sourceFrom: (()->Int)? = nil) -> Self {
+        self.dataInt = sourceFrom
         return self
     }
     public func valueDouble(_ sourceFrom: (()->Double)? = nil) -> Self {
@@ -244,6 +249,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
         if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
             let data: Any?
             if let value = cellItem.dataBoolean {
+                data = value()
+            }
+            else if let value = cellItem.dataInt {
                 data = value()
             }
             else if let value = cellItem.dataDouble {

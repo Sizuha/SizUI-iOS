@@ -47,6 +47,7 @@ public extension SizPropertyTableRow {
         
         case value(_ function: ()->String?)
         case valueBoolean(_ function: ()->Bool)
+        case valueInt(_ function: ()->Int)
         case valueDouble(_ function: ()->Double)
 		
 		// for Edit Ctrl
@@ -67,6 +68,7 @@ public extension SizPropertyTableRow {
 			
             case .value(let function): dataString = function
             case .valueBoolean(let function): dataBoolean = function
+            case .valueInt(let function): dataInt = function
             case .valueDouble(let function): dataDouble = function
             
 			case .created(let proc): onCreate = proc
