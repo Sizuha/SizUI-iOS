@@ -41,7 +41,12 @@ open class SizPopupPickerViewBase: UIView {
 	
 	private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
-		//self.backgroundColor = UIColor.black
+        if #available(iOS 13.0, *) {
+            self.backgroundColor = .systemBackground
+        }
+        else {
+            self.backgroundColor = .white
+        }
 		
 		pickerToolbar = UIToolbar()
 		pickerToolbar.isTranslucent = false
