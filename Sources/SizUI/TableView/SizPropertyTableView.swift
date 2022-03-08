@@ -62,6 +62,7 @@ open class SizPropertyTableRow {
     
     var dataString: (()->String?)? = nil
     var dataBoolean: (()->Bool)? = nil
+    var dataDouble: (()->Double)? = nil
 	
 	public var onSelect: TableViewIndexProc? = nil
 	public var onCreate: TableViewCellProc? = nil
@@ -103,7 +104,20 @@ open class SizPropertyTableRow {
             self.cellClass = cellClass!
         }
 	}
-	
+    
+    public func value(_ sourceFrom: (()->String?)? = nil) -> Self {
+        self.dataString = sourceFrom
+        return self
+    }
+    public func valueBoolean(_ sourceFrom: (()->Bool)? = nil) -> Self {
+        self.dataBoolean = sourceFrom
+        return self
+    }
+    public func valueDouble(_ sourceFrom: (()->Double)? = nil) -> Self {
+        self.dataDouble = sourceFrom
+        return self
+    }
+
 	public func onHeight(_ height: (()->CGFloat)? = nil) -> Self {
 		self.height = height
 		return self
@@ -112,14 +126,6 @@ open class SizPropertyTableRow {
 		self.label = text
 		return self
 	}
-	public func value(_ sourceFrom: (()->String?)? = nil) -> Self {
-		self.dataString = sourceFrom
-		return self
-	}
-    public func valueBoolean(_ sourceFrom: (()->Bool)? = nil) -> Self {
-        self.dataBoolean = sourceFrom
-        return self
-    }
 	public func selection(items: [String]) -> Self {
 		self.selectionItems = items
 		return self
@@ -238,6 +244,9 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
         if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
             let data: Any?
             if let value = cellItem.dataBoolean {
+                data = value()
+            }
+            else if let value = cellItem.dataDouble {
                 data = value()
             }
             else {
