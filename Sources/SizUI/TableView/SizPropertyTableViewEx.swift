@@ -46,6 +46,7 @@ public extension SizPropertyTableRow {
 		case willDisplay(_ proc: TableViewCellProc)
         
         case value(_ function: ()->String?)
+        case valueBoolean(_ function: ()->Bool)
 		
 		// for Edit Ctrl
 		case hint(_ text: String)
@@ -64,6 +65,7 @@ public extension SizPropertyTableRow {
 			case .height(let proc): height = proc
 			
             case .value(let function): dataString = function
+            case .valueBoolean(let function): dataBoolean = function
             
 			case .created(let proc): onCreate = proc
 			case .selected(let proc): onSelect = proc

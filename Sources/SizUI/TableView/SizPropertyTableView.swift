@@ -61,6 +61,7 @@ open class SizPropertyTableRow {
 	var selectionItems: [String]? = nil
     
     var dataString: (()->String?)? = nil
+    var dataBoolean: (()->Bool)? = nil
 	
 	public var onSelect: TableViewIndexProc? = nil
 	public var onCreate: TableViewCellProc? = nil
@@ -115,6 +116,10 @@ open class SizPropertyTableRow {
 		self.dataString = sourceFrom
 		return self
 	}
+    public func valueBoolean(_ sourceFrom: (()->Bool)? = nil) -> Self {
+        self.dataBoolean = sourceFrom
+        return self
+    }
 	public func selection(items: [String]) -> Self {
 		self.selectionItems = items
 		return self
@@ -231,7 +236,15 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
     
     override open func willDisplay(cell: UITableViewCell, rowAt: IndexPath) {
         if let cellItem = self.source?[rowAt.section].rows[rowAt.row] {
-            (cell as? SizPropertyTableCell)?.updateContent(data: cellItem.dataString?(), at: cellItem)
+            let data: Any?
+            if let value = cellItem.dataBoolean {
+                data = value()
+            }
+            else {
+                data = cellItem.dataString?()
+            }
+            
+            (cell as? SizPropertyTableCell)?.updateContent(data: data, at: cellItem)
             
             if let onWillDisplay = cellItem.onWillDisplay {
                 onWillDisplay(cell, rowAt)
