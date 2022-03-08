@@ -12,11 +12,13 @@ UI Utilities for iOS(Swift)
 #### Swift Package Manager
 
 Go to Project -> Swift Packages and add the repository:
+
 ```
 https://github.com/Sizuha/SizUI-iOS
 ```
 
 # DarkModeの確認
+
 ```swift
 import SizUI
 
@@ -40,6 +42,7 @@ class XXXViewController: UIViewController {
 ```
 
 # Alert Dialog
+
 ```swift
 import SizUI
 
@@ -60,6 +63,7 @@ Alert(title: "TITLE", message: "MESSAGE", buttons: [
 ```
 
 # Action Sheet
+
 ```swift
 ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
     .default("ACTION1") {
@@ -73,6 +77,7 @@ ActionSheet(title: "TITLE", message: "MESSAGE", buttons:
 ```
 
 # Swipe Action
+
 ```swift
 func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 	Swipe(actions: [
@@ -85,6 +90,7 @@ func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRow
 
 
 # Loading Indicator
+
 ```swift
 // ローティング表示
 import SizUI
@@ -102,6 +108,7 @@ UIAlertController.showIndicatorAlert(viewController: self, message: "MESSAGE") {
 # 入力画面や詳細情報などを表現する為のTableView (SizPropertyTableView)
 
 全体図
+
 ```swift
 import SizUI
 
@@ -135,6 +142,7 @@ class XXXViewController: UIViewController {
 ```
 
 各Section毎に、Cellを定義する
+
 ```swift
 sections.append(SizPropertyTableSection(title: "Section A", rows: [
 /*
@@ -149,10 +157,11 @@ sections.append(SizPropertyTableSection(title: "Section A", rows: [
 
 	TextCell(label: "ラベル", attrs: [ 
 		.hint(/* placeholder text */),
-		.read { return /* Cellに表示するデータを読み込む */ },
+		.value { return /* Cellに表示するデータを読み込む */ },
 		.created { cell: UITableViewCell, index: IndexPath in
 			// Cellが生成された時
 			let cell = TextCell.cellView(cell)
+			cell.contentConfiguration
 		},
 		.valueChanged { value: Any in
 			// 入力可能なCellの場合、入力した内容が変化した時
