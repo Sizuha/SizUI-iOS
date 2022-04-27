@@ -17,8 +17,8 @@ open class SizPopupPickerViewBase: UIView {
 	}()
     
     public static var PADDING_BOTTOM: CGFloat = 40
-    var PICKER_HEIGHT: CGFloat = 260
-    let TOOLBAR_HEIGHT: CGFloat = 44
+    public var PICKER_HEIGHT: CGFloat = 260
+    public let TOOLBAR_HEIGHT: CGFloat = 44
 
 	public var onHidden: (()->Void)? = nil
 	
@@ -69,9 +69,9 @@ open class SizPopupPickerViewBase: UIView {
 	
 	open func show() {}
 	
-	@objc func onCancel() {}
+	@objc open func onCancel() {}
 	
-	@objc func endPicker() {}
+	@objc open  func endPicker() {}
 	
 	open func hide() {
 		let screenSize = UIScreen.main.bounds.size
@@ -175,13 +175,13 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		}
 	}
 	
-	override func onCancel() {
+    override open func onCancel() {
 		hide()
 		restoreSelectedRows()
 		selectedRows = nil
 	}
 	
-	override func endPicker() {
+    override open func endPicker() {
 		hide()
 		delegate?.pickerView?(pickerView, didSelect: getSelectedRows())
 		selectedRows = nil
