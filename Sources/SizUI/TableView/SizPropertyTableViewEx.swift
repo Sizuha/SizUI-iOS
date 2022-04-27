@@ -66,7 +66,7 @@ public extension SizPropertyTableRow {
 			case .tintColor(let color): tintColor = color
 			case .height(let proc): height = proc
 			
-            case .value(let function): dataString = function
+            case .value(let function): data = function
             case .valueBoolean(let function): dataBoolean = function
             case .valueInt(let function): dataInt = function
             case .valueDouble(let function): dataDouble = function
