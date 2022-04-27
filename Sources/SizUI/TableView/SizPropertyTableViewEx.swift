@@ -45,7 +45,7 @@ public extension SizPropertyTableRow {
 		case selected(_ proc: TableViewIndexProc)
 		case willDisplay(_ proc: TableViewCellProc)
         
-        case value(_ function: ()->String?)
+        case value(_ function: ()->Any?)
         case valueBoolean(_ function: ()->Bool)
         case valueInt(_ function: ()->Int)
         case valueDouble(_ function: ()->Double)
