@@ -2,7 +2,7 @@
 //  SizUI.swift
 //  
 //
-//  Created by ILKYOUNG HWANG on 2021/12/29.
+//  Copyright © 2021 Sizuha. All rights reserved.
 //
 
 import Foundation
