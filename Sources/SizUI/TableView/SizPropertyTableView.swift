@@ -399,7 +399,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
                 // nothing
             }
             else {
-                cellView.detailTextLabel?.text = cellItem.dataString?() ?? ""
+                cellView.detailTextLabel?.text = (cellItem.data?() as? String) ?? ""
                 cellView.detailTextLabel?.textColor = cellItem.textColor
             }
 		}
