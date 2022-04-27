@@ -44,6 +44,8 @@ open class SizTextFieldChecker {
     
     public var fields: [Field] = []
     
+    public init() {}
+    
     open func bypassDelegate(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         for field in fields {
             guard field.textField == textField else { continue }
