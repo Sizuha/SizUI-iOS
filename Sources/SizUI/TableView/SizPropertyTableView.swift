@@ -60,10 +60,10 @@ open class SizPropertyTableRow {
 	var height: (()->CGFloat)? = nil
 	var selectionItems: [String]? = nil
     
-    var dataString: (()->String?)? = nil
     var dataBoolean: (()->Bool)? = nil
     var dataInt: (()->Int)? = nil
     var dataDouble: (()->Double)? = nil
+    var data: (()->Any)? = nil
 	
 	public var onSelect: TableViewIndexProc? = nil
 	public var onCreate: TableViewCellProc? = nil
@@ -106,8 +106,8 @@ open class SizPropertyTableRow {
         }
 	}
     
-    public func value(_ sourceFrom: (()->String?)? = nil) -> Self {
-        self.dataString = sourceFrom
+    public func value(_ sourceFrom: (()->Any?)? = nil) -> Self {
+        self.data = sourceFrom
         return self
     }
     public func valueBoolean(_ sourceFrom: (()->Bool)? = nil) -> Self {
@@ -258,7 +258,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
                 data = value()
             }
             else {
-                data = cellItem.dataString?()
+                data = cellItem.data?()
             }
             
             (cell as? SizPropertyTableCell)?.updateContent(data: data, at: cellItem)
