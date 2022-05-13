@@ -148,14 +148,15 @@ sections.append(SizPropertyTableSection(title: "Section A", rows: [
 /*
 	下記のクラスから選んで追加
 	
-	TextCell(label: "ラベル", attrs: [ ...]) // テキスト表示
+	TextCell(label: "ラベル", [...]) // テキスト表示
 	EditTextCell(...) // InputFildでテキストを入力
-	OnOffCell(...) // SwitchコントロールでOn/OffをToggle
+	OnOffCell(label: "ラベル", ...) // SwitchコントロールでOn/OffをToggle
 	ButtonCell(...) // ボタンとして扱う
+    ImageCell (...) // 画像表示  
 	
 */
 
-	TextCell(label: "ラベル", attrs: [ 
+	TextCell(label: "ラベル", [ 
 		.hint(/* placeholder text */),
 		.value { return /* Cellに表示するデータを読み込む */ },
 		.created { cell: UITableViewCell, index: IndexPath in

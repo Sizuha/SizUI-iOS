@@ -96,6 +96,15 @@ open class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
         super.init(type: cellType, cellClass: T.self, label: label)
 		applyAttrs(attrs)
 	}
+    
+    public init(
+        label: String = "",
+        _ attrs: [SizPropertyTableRow.Attribute] = [])
+    {
+        let cellType = T.cellType
+        super.init(type: cellType, cellClass: T.self, label: label)
+        applyAttrs(attrs)
+    }
 	
 	public static func cellView(_ cell: UITableViewCell) -> T { cell as! T }
 	
