@@ -68,6 +68,10 @@ open class SizPopupPickerViewBase: UIView {
 	}
 	
 	open func show() {}
+    
+    @objc public func cancel() {
+        onCancel()
+    }
 	
 	@objc open func onCancel() {}
 	
@@ -209,6 +213,18 @@ public class SizStringPicker: SizPopupPickerView {
     
     private var strings: [String] = []
     public var onSelected: ((_ index: Int, _ text: String)->Void)? = nil
+    
+    public var selectedRow: Int? {
+        get {
+            self.selectedRows?.first
+        }
+        set {
+            self.selectedRows?.removeAll()
+            if let value = newValue {
+                self.selectedRows = [value]
+            }
+        }
+    }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

@@ -111,6 +111,6 @@ public func Swipe(
 }
 
 // MARK: PickerView
-public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: String)->Void) -> SizPopupPickerView {
+public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: String)->Void) -> SizStringPicker {
     SizStringPicker(strings: strings, onSelected: onSelected)
 }
