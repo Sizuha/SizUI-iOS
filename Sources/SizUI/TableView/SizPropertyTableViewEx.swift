@@ -44,7 +44,7 @@ public extension SizPropertyTableRow {
 		case created(_ proc: TableViewCellProc)
 		case selected(_ proc: TableViewIndexProc)
 		case willDisplay(_ proc: TableViewCellProc)
-        case selectable(_ flag: Bool)
+        case isSelectable(_ flag: Bool)
         
         case value(_ function: ()->Any?)
         case valueBoolean(_ function: ()->Bool)
@@ -74,7 +74,7 @@ public extension SizPropertyTableRow {
             
 			case .created(let proc): onCreate = proc
 			case .selected(let proc): onSelect = proc
-            case .selectable(let flag): isSelectable = flag
+            case .isSelectable(let flag): isSelectable = flag
 			case .willDisplay(let proc): onWillDisplay = proc
 			case .hint(let text): hint = text
 			case .valueChanged(let proc): onChanged = proc
