@@ -71,7 +71,7 @@ open class SizPropertyTableRow {
 	public var onChanged: ((_ value: Any?)->Void)? = nil
     
     public var isSelectable: (()->Bool) = {
-        onSelect != nil
+        self.onSelect != nil
     }
 	
 	public init(
