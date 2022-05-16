@@ -193,4 +193,40 @@ public extension UIImage {
         return uiImage
     }
     
+    /// 画像にテキストを入れる
+    /// - Parameters:
+    ///   - text: テキスト
+    ///   - color: テキスト色（基本値：黄色）
+    ///   - font: Font（基本値：Helvetica Bold, size=50）
+    ///   - text: テキスト
+    ///   - to: 画像
+    ///   - at: テキストの位置（画像内で）
+    /// - Returns: 修正された画像
+    class func draw(
+        text: String,
+        color textColor: UIColor = .yellow,
+        font: UIFont? = nil,
+        to image: UIImage,
+        at point: CGPoint
+    ) -> UIImage {
+        let textFont = font ?? UIFont(name: "Helvetica Bold", size: 50)!
+
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(image.size, false, scale)
+
+        let textFontAttributes = [
+            NSAttributedString.Key.font: textFont,
+            NSAttributedString.Key.foregroundColor: textColor,
+        ] as [NSAttributedString.Key : Any]
+        image.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+
+        let rect = CGRect(origin: point, size: image.size)
+        text.draw(in: rect, withAttributes: textFontAttributes)
+
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return newImage!
+    }
+    
 }
