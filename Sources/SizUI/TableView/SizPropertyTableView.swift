@@ -70,8 +70,12 @@ open class SizPropertyTableRow {
 	public var onWillDisplay: TableViewCellProc? = nil
 	public var onChanged: ((_ value: Any?)->Void)? = nil
     
-    public var isSelectable: (()->Bool) = {
-        self.onSelect != nil
+    public var isSelectable: (()->Bool)? = nil
+    public func checkIsSelectable() -> Bool {
+        if let fun = self.isSelectable {
+            return fun()
+        }
+        return self.onSelect != nil
     }
 	
 	public init(
@@ -290,8 +294,8 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
                 self.deselectRow(at: rowAt, animated: true)
             }
             
-            if cellItem.isSelectable() {
-                cellItem.onSelect?(rowAt)
+            if cellItem.checkIsSelectable() {
+                cellItem.onSelect!(rowAt)
             }
         }
     }
@@ -385,7 +389,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
             break
 			
 		case .multiLine:
-            cellView.accessoryType = cellItem.isSelectable()
+            cellView.accessoryType = cellItem.checkIsSelectable()
 				? .disclosureIndicator
 				: .none
             //guard let cell = cellView as? SizCellForMultiLine else { break }
@@ -398,7 +402,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 		case .text: fallthrough
         case .strings: fallthrough
 		default:
-			cellView.accessoryType = cellItem.isSelectable()
+			cellView.accessoryType = cellItem.checkIsSelectable()
 				? .disclosureIndicator
 				: .none
             
@@ -429,7 +433,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
             }
         }
 
-		cellView.selectionStyle = cellItem.isSelectable() ? .default : .none
+		cellView.selectionStyle = cellItem.checkIsSelectable() ? .default : .none
 		if let sizCell = cellView as? SizPropertyTableCell {
 			sizCell.onGetCellHieght = cellItem.height
 			sizCell.onValueChanged = cellItem.onChanged
