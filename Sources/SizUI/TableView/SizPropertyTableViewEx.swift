@@ -92,7 +92,7 @@ open class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
 	
 	public init(
 		label: String = "",
-		attrs: [SizPropertyTableRow.Attribute] = [])
+		attrs: [SizPropertyTableRow.Attribute])
 	{
 		let cellType = T.cellType
         super.init(type: cellType, cellClass: T.self, label: label)
