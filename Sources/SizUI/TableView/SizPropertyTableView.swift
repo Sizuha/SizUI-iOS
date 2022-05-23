@@ -222,7 +222,7 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 	public var autoEndEditing = true
     public var deselectAfterSelectedRow = false
 	
-	private var source: [SizPropertyTableSection]? = nil
+	public var source: [SizPropertyTableSection]? = nil
 	public func setDataSource(_ source: [SizPropertyTableSection]) {
 		self.source = source
 	}
