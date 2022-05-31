@@ -106,13 +106,38 @@ extension UIImage {
             print("- TIFFModel: \(modelName)")
             print("- imageOrientation: \(imageOrientation.rawValue)")
             
-            guard let newCgImage = self.cgImage else { fatalError() }
+            guard let newCgImage = self.cgImage?.resize(size: self.size) else {
+                print("cgImage is Nil")
+                return nil
+            }
             
-            let imageDestinationRef = CGImageDestinationCreateWithData(data as CFMutableData, kUTTypeJPEG, 1, nil)!
+            guard let imageDestinationRef = CGImageDestinationCreateWithData(data as CFMutableData, kUTTypeJPEG, 1, nil)
+            else {
+                return nil
+            }
             CGImageDestinationAddImage(imageDestinationRef, newCgImage, options)
             CGImageDestinationFinalize(imageDestinationRef)
             
             return data as Data
         }
+    }
+}
+
+extension CGImage {
+    /// cf. https://qiita.com/john-rocky/items/dfb6ca375a24e2ebd201
+    func resize(size:CGSize) -> CGImage? {
+        let width: Int = Int(size.width)
+        let height: Int = Int(size.height)
+
+        let bytesPerPixel = self.bitsPerPixel / self.bitsPerComponent
+        let destBytesPerRow = width * bytesPerPixel
+
+        guard let colorSpace = self.colorSpace else { return nil }
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: self.bitsPerComponent, bytesPerRow: destBytesPerRow, space: colorSpace, bitmapInfo: self.alphaInfo.rawValue) else { return nil }
+
+        context.interpolationQuality = .high
+        context.draw(self, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        return context.makeImage()
     }
 }
