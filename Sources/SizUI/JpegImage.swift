@@ -123,7 +123,7 @@ extension UIImage {
     }
 }
 
-extension CGImage {
+public extension CGImage {
     /// cf. https://qiita.com/john-rocky/items/dfb6ca375a24e2ebd201
     func resize(size:CGSize) -> CGImage? {
         let width: Int = Int(size.width)
