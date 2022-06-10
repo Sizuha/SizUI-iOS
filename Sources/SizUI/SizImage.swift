@@ -119,21 +119,18 @@ public extension UIImage {
         fixed(orientation: self.imageOrientation)
     }
     
-    func fixed(orientation: UIImage.Orientation) -> UIImage {
+    func fixed(orientation ori: UIImage.Orientation) -> UIImage {
         print("image orientation: \(imageOrientation.rawValue)")
         
         let image = self
-        guard image.imageOrientation != .up else {
+        guard ori != .up else {
             return image
         }
         
         let size = image.size
-        
-        let imageOrientation = image.imageOrientation
-        
         var transform: CGAffineTransform = .identity
 
-        switch image.imageOrientation {
+        switch ori {
         case .down, .downMirrored:
             transform = transform.translatedBy(x: size.width, y: size.height)
             transform = transform.rotated(by: CGFloat.pi)
@@ -150,7 +147,7 @@ public extension UIImage {
         }
 
         // Flip image one more time if needed to, this is to prevent flipped image
-        switch imageOrientation {
+        switch ori {
         case .upMirrored, .downMirrored:
             transform = transform.translatedBy(x: size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
