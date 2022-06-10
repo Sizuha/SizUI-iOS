@@ -115,10 +115,20 @@ public extension UIImage {
         return self
     }
     
-    func fixedOrientation() -> UIImage {
-        fixed(orientation: self.imageOrientation)
+    func fixedOrientation() -> UIImage? {
+        if self.imageOrientation == UIImage.Orientation.up {
+            return self
+        }
+
+        UIGraphicsBeginImageContext(self.size)
+        self.draw(in: CGRect(origin: .zero, size: self.size))
+        let normalizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return normalizedImage
     }
     
+    /// up/down（mirredを含めて）以外の場合、不具合あり。
+    /// でも、念のために残しておく。
     func fixed(orientation ori: UIImage.Orientation) -> UIImage {
         print("image orientation: \(imageOrientation.rawValue)")
         
