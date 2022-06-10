@@ -114,8 +114,12 @@ public extension UIImage {
 
         return self
     }
-
+    
     func fixedOrientation() -> UIImage {
+        fixed(orientation: self.imageOrientation)
+    }
+    
+    func fixed(orientation: UIImage.Orientation) -> UIImage {
         print("image orientation: \(imageOrientation.rawValue)")
         
         let image = self

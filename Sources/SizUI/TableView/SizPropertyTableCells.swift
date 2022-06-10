@@ -70,6 +70,7 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
     open override func onInit() {
         super.onInit()
         textField = UITextField(frame: .zero)
+        textField.keyboardType = .default
         textField.returnKeyType = .next
         textField.textColor = .inputText
         textField.delegate = self
