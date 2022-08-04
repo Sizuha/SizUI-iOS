@@ -5,6 +5,13 @@
 import UIKit
 import AVKit
 
+public extension IndexPath {
+    static var zero: IndexPath {
+        IndexPath(row: 0, section: 0)
+    }
+}
+
+
 // MARK: - UIColor
 // Color extention to hex
 public extension UIColor {
