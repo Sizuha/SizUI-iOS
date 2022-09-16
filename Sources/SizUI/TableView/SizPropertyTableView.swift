@@ -232,11 +232,24 @@ open class SizPropertyTableView: SizTableView, UITableViewDataSource {
 	}
 	
 	public var autoEndEditing = true
+    
     public var deselectAfterSelectedRow = false
+    public var autoDeselect: Bool {
+        get { self.deselectAfterSelectedRow }
+        set { self.deselectAfterSelectedRow = newValue }
+    }
 	
-	public var source: [SizPropertyTableSection]? = nil
+    public var sections: [SizPropertyTableSection]? = nil
+    
+    /// これの代わりに、「sections」メンバーを使うこと
+    public var source: [SizPropertyTableSection]? {
+        get { self.sections }
+        set { self.sections = newValue }
+    }
+    
+    /// これの代わりに、「sections」メンバーを使うこと
 	public func setDataSource(_ source: [SizPropertyTableSection]) {
-		self.source = source
+		self.sections = source
 	}
 	
 	open override func willDisplayHeaderView(view: UIView, section: Int) {
