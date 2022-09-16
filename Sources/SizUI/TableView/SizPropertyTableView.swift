@@ -11,6 +11,9 @@ public let DEFAULT_HEIGHT: CGFloat = -1
 public let FILL_WIDTH: CGFloat = -10
 public let HALF_WIDTH: CGFloat = -2
 
+
+// MARK: - SizPropertyTableSection
+
 open class SizPropertyTableSection {
 	public var title: String? = nil
 	public var rows: [SizPropertyTableRow]
@@ -32,6 +35,9 @@ open class SizPropertyTableSection {
 
 public typealias TableViewIndexProc = (_ index: IndexPath)->Void
 public typealias TableViewCellProc = (UITableViewCell, IndexPath)->Void
+
+
+// MARK: - SizPropertyTableRow
 
 open class SizPropertyTableRow {
 	public enum CellType {
@@ -177,6 +183,9 @@ open class SizPropertyTableRow {
 	}
 }
 
+
+// MARK: - SizPropertyTableCell
+
 open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -200,6 +209,9 @@ open class SizPropertyTableCell: UITableViewCell, SizViewUpdater {
 	
 	open class var cellType: SizPropertyTableRow.CellType { .custom }
 }
+
+
+// MARK: - SizPropertyTableView
 
 open class SizPropertyTableView: SizTableView, UITableViewDataSource {
     

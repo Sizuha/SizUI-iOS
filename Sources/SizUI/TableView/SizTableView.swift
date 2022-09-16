@@ -24,8 +24,6 @@ public protocol SizTableViewEvent {
 	func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
 	@available(iOS 11.0, *)
 	func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
-    
-    func didScroll()
 	
 }
 
@@ -63,7 +61,7 @@ open class SizTableView
 		return conf
 	}
     
-    open func didScroll() {}
+    open var didScroll: (()->Void)?
 	
 	
 	// MARK: - TableView Delegates
@@ -107,7 +105,7 @@ open class SizTableView
     // MARK: - ScrollView Delegates
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        didScroll()
+        didScroll?()
     }
     
 }
