@@ -24,6 +24,8 @@ public protocol SizTableViewEvent {
 	func leadingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
 	@available(iOS 11.0, *)
 	func trailingSwipeActions(rowAt: IndexPath) -> UISwipeActionsConfiguration?
+    
+    func didScroll()
 	
 }
 
@@ -60,9 +62,11 @@ open class SizTableView
 		let conf = UISwipeActionsConfiguration()
 		return conf
 	}
+    
+    open func didScroll() {}
 	
 	
-	//MARK: - UITableViewDelegate
+	// MARK: - TableView Delegates
 	
 	public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 		//print("tableView willSelectRowAt: \(indexPath.section)/\(indexPath.row)")
@@ -100,4 +104,10 @@ open class SizTableView
 		return trailingSwipeActions(rowAt: indexPath)
 	}
 
+    // MARK: - ScrollView Delegates
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        didScroll()
+    }
+    
 }
