@@ -80,14 +80,14 @@ open class SizPopupPickerViewBase: UIView {
 	open func hide() {
 		let screenSize = UIScreen.main.bounds.size
 		UIView.animate(withDuration: 0.2, animations: {
-            self.frame = CGRect(x: 0, y: self.parentViewHeight(), width: screenSize.width, height: self.PICKER_HEIGHT)
+            self.frame = CGRect(x: 0, y: self.parentViewHeight() + 10, width: screenSize.width, height: self.PICKER_HEIGHT)
 		}) { finished in
 			if finished { self.onHidden?() }
 		}
 	}
 	
 	open func parentViewHeight() -> CGFloat {
-		return superview?.frame.height ?? UIScreen.main.bounds.size.height
+		UIScreen.main.bounds.size.height
 	}
 }
 
