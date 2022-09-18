@@ -98,6 +98,9 @@ open class SizPopupPickerViewBase: UIView {
 	@objc optional func pickerView(_ pickerView: UIPickerView, didSelect rows: [Int])
 }
 
+/// deprecated
+///
+/// これの代わりに「PickerViewEx」を使うこと
 open class SizPopupPickerView: SizPopupPickerViewBase {
 	private var pickerView: UIPickerView!
     
@@ -141,7 +144,7 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		selectedRows = rows
     }
 	
-	private func onInit() {
+    private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
 		
 		pickerView = UIPickerView()
@@ -220,6 +223,9 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 
 // MARK: - SizStringPicker
 
+/// deprecated
+///
+/// これの代わりに「PickerViewEx」を使うこと
 public class SizStringPicker: SizPopupPickerView {
     
     private var strings: [String] = []

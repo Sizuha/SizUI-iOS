@@ -8,6 +8,19 @@
 import Foundation
 import UIKit
 
+
+public func Blur(
+    frame: CGRect,
+    style: UIBlurEffect.Style = .regular
+) -> UIVisualEffectView {
+    let blurEffect = UIBlurEffect(style: style)
+    let blurEffectView = UIVisualEffectView(effect: blurEffect)
+    blurEffectView.frame = frame
+    blurEffectView.isHidden = false
+    return blurEffectView
+}
+
+
 public enum ActionButton {
     case `default`(_ text: String, action: (()->Void)? = nil)
     case destrucive(_ text: String, action: (()->Void)? = nil)

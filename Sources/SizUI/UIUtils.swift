@@ -26,18 +26,6 @@ public extension CGRect {
     }
 }
 
-public func Blur(
-    frame: CGRect,
-    style: UIBlurEffect.Style = .regular
-) -> UIVisualEffectView {
-    let blurEffect = UIBlurEffect(style: style)
-    let blurEffectView = UIVisualEffectView(effect: blurEffect)
-    blurEffectView.frame = frame
-    blurEffectView.isHidden = false
-    return blurEffectView
-}
-
-
 // MARK: - UIColor
 // Color extention to hex
 public extension UIColor {
