@@ -324,35 +324,6 @@ public extension UIView {
         self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
     }
 
-    func fadeOut(parent: UIView, completion: ((Bool)->Void)? = nil) {
-        let fadeView = self
-        fadeView.backgroundColor = UIColor.black
-        fadeView.frame = parent.frame
-        
-        let window = getKeyWindow()!
-        window.addSubview(fadeView)
-        
-        fadeView.alpha = 0
-        fadeView.isHidden = false
-        
-        UIView.animate(withDuration: 0.2, animations: {
-            fadeView.alpha = 0.25
-        }, completion: completion)
-    }
-
-    func fadeIn(completion: ((Bool)->Void)? = nil) {
-        let fadeView = self
-        guard !fadeView.isHidden else { return }
-        
-        UIView.animate(withDuration: 0.2, animations: {
-            fadeView.alpha = 0
-        }, completion: { b in
-            fadeView.isHidden = true
-            fadeView.removeFromSuperview()
-            completion?(b)
-        })
-    }
-
 }
 
 // MARK: - UIViewController
@@ -429,6 +400,45 @@ public extension UIViewController {
 			UIApplication.shared.statusBarView?.backgroundColor = color
 		}
 	}
+    
+    // MARK: Fade Out/In
+    
+    func fadeOut(tag: Int = 10101010, alpha: CGFloat = 0.25, completion: ((Bool)->Void)? = nil) -> UIView {
+        let fadeView = UIView(frame: self.view.frame)
+        fadeView.tag = tag
+        fadeView.backgroundColor = UIColor.black
+        
+        let window = getKeyWindow()!
+        window.addSubview(fadeView)
+        
+        fadeView.alpha = 0
+        fadeView.isHidden = false
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            fadeView.alpha = alpha
+        }, completion: completion)
+        
+        return fadeView
+    }
+
+    func fadeIn(tag: Int = 10101010, completion: ((Bool)->Void)? = nil) {
+        guard let fadeView = getKeyWindow()?.subviews.first(where: { $0.tag == tag }) else {
+            return
+        }
+        
+        guard !fadeView.isHidden else {
+            fadeView.removeFromSuperview()
+            return
+        }
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            fadeView.alpha = 0
+        }, completion: {
+            fadeView.isHidden = true
+            fadeView.removeFromSuperview()
+            completion?($0)
+        })
+    }
 
 }
 
