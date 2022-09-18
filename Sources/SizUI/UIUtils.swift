@@ -171,6 +171,21 @@ public extension UIColor {
 
 
 // MARK: - UIApplication
+
+public func getKeyWindow() -> UIWindow? {
+    let window: UIWindow?
+    
+    if #available(iOS 15.0, *) {
+        let scenes = UIApplication.shared.connectedScenes
+        let windowScene = scenes.first as? UIWindowScene
+        window = windowScene?.windows.first { $0.isKeyWindow }
+    }
+    else {
+        window = UIApplication.shared.windows.first { $0.isKeyWindow }
+    }
+    return window
+}
+
 public extension UIApplication {
     
     /// iOS11 ~ iOS12まで有効
@@ -181,6 +196,9 @@ public extension UIApplication {
 		return nil
 	}
 	
+    /// deprecated
+    ///
+    /// これの代わりに「getKeyWindow() 」関数を使うこと
 	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
     
     var interfaceOrientation: UIInterfaceOrientation? {
@@ -311,14 +329,14 @@ public extension UIView {
         fadeView.backgroundColor = UIColor.black
         fadeView.frame = parent.frame
         
-        let window = UIApplication.shared.getKeyWindow()!
+        let window = getKeyWindow()!
         window.addSubview(fadeView)
         
         fadeView.alpha = 0
         fadeView.isHidden = false
         
         UIView.animate(withDuration: 0.2, animations: {
-            fadeView.alpha = 0.4
+            fadeView.alpha = 0.25
         }, completion: completion)
     }
 
