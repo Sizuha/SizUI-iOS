@@ -28,10 +28,8 @@ public class PickerViewEx: UIView {
     private var parentViewController: UIViewController?
     private var fadeView: UIView?
     private var fadeViewTap: UITapGestureRecognizer?
-    private var blurView: UIVisualEffectView?
     
     public struct Options {
-        public var blur = false
         public var pickerHeight: CGFloat = 300
         public var didSelect: ((_ component: Int, _ row: Int)->Void)?
         public var didHide: (()->Void)?
@@ -134,17 +132,6 @@ public class PickerViewEx: UIView {
         
         self.fadeView = from.fadeOut() { _ in
             self.fadeView?.addGestureRecognizer(self.fadeViewTap!)
-        }
-        
-        if self.options?.blur == true {
-            self.backgroundColor = .clear
-            if self.blurView == nil {
-                self.blurView = Blur(frame: self.frame)
-                self.superview?.addSubview(self.blurView!)                
-            }
-            else {
-                self.blurView?.frame = self.frame
-            }
         }
         
         self.superview?.removeFromSuperview()
