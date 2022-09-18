@@ -167,10 +167,9 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
     }
 	
 	override open func show() {
-        self.superview?.removeFromSuperview()
-        
+        self.removeFromSuperview()
         getKeyWindow()?.addSubview(self)
-        self.superview?.bringSubviewToFront(self)
+        self.bringToFront()
         
 		if selectedRows == nil {
 			selectedRows = getSelectedRows()
