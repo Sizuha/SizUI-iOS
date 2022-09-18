@@ -9,6 +9,32 @@ public extension IndexPath {
     static var zero: IndexPath {
         IndexPath(row: 0, section: 0)
     }
+    
+    var nextRow: IndexPath {
+        IndexPath(row: self.row+1, section: self.section)
+    }
+    
+    var prevRow: IndexPath? {
+        guard self.row > 0 else { return nil }
+        return IndexPath(row: self.row-1, section: self.section)
+    }
+}
+
+public extension CGRect {
+    init(width: CGFloat, height: CGFloat) {
+        self.init(x: 0, y: 0, width: width, height: height)
+    }
+}
+
+public func Blur(
+    frame: CGRect,
+    style: UIBlurEffect.Style = .regular
+) -> UIVisualEffectView {
+    let blurEffect = UIBlurEffect(style: style)
+    let blurEffectView = UIVisualEffectView(effect: blurEffect)
+    blurEffectView.frame = frame
+    blurEffectView.isHidden = false
+    return blurEffectView
 }
 
 
@@ -402,7 +428,7 @@ public extension UIViewController {
     
     // MARK: Fade Out/In
     
-    func fadeOut(tag: Int = 10101010, alpha: CGFloat = 0.25, completion: ((Bool)->Void)? = nil) -> UIView {
+    func fadeOut(tag: Int = 10101010, alpha: CGFloat = 0.3, completion: ((Bool)->Void)? = nil) -> UIView {
         let fadeView = UIView(frame: self.view.frame)
         fadeView.tag = tag
         fadeView.backgroundColor = UIColor.black
