@@ -42,7 +42,7 @@ open class SizPopupPickerViewBase: UIView {
 	private func onInit() {
 		let screenSize = UIScreen.main.bounds.size
         if #available(iOS 13.0, *) {
-            self.backgroundColor = .systemBackground
+            self.backgroundColor = .secondarySystemBackground
         }
         else {
             self.backgroundColor = .white
@@ -50,7 +50,13 @@ open class SizPopupPickerViewBase: UIView {
 		
 		pickerToolbar = UIToolbar()
 		pickerToolbar.isTranslucent = false
-		pickerToolbar.backgroundColor = UIColor.clear
+        
+        if #available(iOS 13.0, *) {
+            pickerToolbar.barTintColor = .secondarySystemBackground
+        }
+        else {
+            pickerToolbar.backgroundColor = UIColor.clear
+        }
 		
 		self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: PICKER_HEIGHT)
 		self.frame = CGRect(x: 0, y: parentViewHeight()+10, width: screenSize.width, height: PICKER_HEIGHT)
@@ -146,11 +152,7 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 		
 		pickerView = UIPickerView()
 		pickerView.showsSelectionIndicator = true
-		if #available(iOS 13.0, *) {
-			pickerView.backgroundColor = .systemBackground
-		} else {
-			pickerView.backgroundColor = .white
-		}
+        pickerView.backgroundColor = .clear
         
         let height = PICKER_HEIGHT - TOOLBAR_HEIGHT - Self.PADDING_BOTTOM
 		pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: height)
