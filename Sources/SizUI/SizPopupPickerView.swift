@@ -158,8 +158,14 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
 	public func setDataSource(_ source: UIPickerViewDataSource) {
 		pickerView.dataSource = source
 	}
+    
+    open override func hide() {
+        super.hide()
+        self.removeFromSuperview()
+    }
 	
 	override open func show() {
+        getKeyWindow()?.addSubview(self)
         self.superview?.bringSubviewToFront(self)
         
 		if selectedRows == nil {
