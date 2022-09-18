@@ -53,7 +53,7 @@ open class SizPopupPickerViewBase: UIView {
 		pickerToolbar.backgroundColor = UIColor.clear
 		
 		self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: PICKER_HEIGHT)
-		self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: PICKER_HEIGHT)
+		self.frame = CGRect(x: 0, y: parentViewHeight()+10, width: screenSize.width, height: PICKER_HEIGHT)
 		pickerToolbar.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: TOOLBAR_HEIGHT)
 		pickerToolbar.frame = CGRect(x: 0, y: 0, width: screenSize.width, height: TOOLBAR_HEIGHT)
 		
@@ -80,9 +80,12 @@ open class SizPopupPickerViewBase: UIView {
 	open func hide() {
 		let screenSize = UIScreen.main.bounds.size
 		UIView.animate(withDuration: 0.2, animations: {
-            self.frame = CGRect(x: 0, y: self.parentViewHeight() + 10, width: screenSize.width, height: self.PICKER_HEIGHT)
+            self.frame = CGRect(x: 0, y: self.parentViewHeight()+10, width: screenSize.width, height: self.PICKER_HEIGHT)
 		}) { finished in
-			if finished { self.onHidden?() }
+			if finished {
+                self.removeFromSuperview()
+                self.onHidden?()
+            }
 		}
 	}
 	
@@ -161,10 +164,11 @@ open class SizPopupPickerView: SizPopupPickerViewBase {
     
     open override func hide() {
         super.hide()
-        self.removeFromSuperview()
     }
 	
 	override open func show() {
+        self.superview?.removeFromSuperview()
+        
         getKeyWindow()?.addSubview(self)
         self.superview?.bringSubviewToFront(self)
         
