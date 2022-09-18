@@ -9,7 +9,6 @@ import Foundation
 
 import UIKit
 
-@available(iOS 9.0, *)
 open class ItemSelector: UIViewController {
     
     /// インスタンスを生成
@@ -114,7 +113,6 @@ open class ItemSelector: UIViewController {
 
 }
 
-@available(iOS 9.0, *)
 extension ItemSelector: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         items.count

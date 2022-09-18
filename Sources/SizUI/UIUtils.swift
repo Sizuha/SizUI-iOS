@@ -283,12 +283,10 @@ public extension UIView {
 		self.layer.cornerRadius = radius
 	}
 	
-	@available(iOS 9.0, *)
 	func setMatchTo(parent: UIView) {
         scaleFill(to: parent)
 	}
     
-    @available(iOS 9.0, *)
     func scaleFill(to targetView: UIView) {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.leftAnchor.constraint(equalTo: targetView.leftAnchor).isActive = true
@@ -304,7 +302,6 @@ public extension UIView {
 		return false
 	}
     
-    @available(iOS 9.0, *)
     func alignBottomOf(navigationBar: UINavigationBar?, parent: UIView, marginTop: CGFloat = 0) {
         guard let navigationBar = navigationBar else { return }
         
@@ -315,7 +312,6 @@ public extension UIView {
         self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
     }
     
-    @available(iOS 9.0, *)
     func alignBottomOf(view: UIView, parent: UIView, constant: CGFloat = 0) {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.topAnchor.constraint(equalTo: view.bottomAnchor, constant: constant).isActive = true
@@ -324,6 +320,9 @@ public extension UIView {
         self.rightAnchor.constraint(equalTo: parent.rightAnchor).isActive = true
     }
 
+    func bringToFront() {
+        self.superview?.bringSubviewToFront(self)
+    }
 }
 
 // MARK: - UIViewController

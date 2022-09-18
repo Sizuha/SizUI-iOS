@@ -3,7 +3,7 @@ UI Utilities for iOS(Swift)
 
 # Requirements
 
-* iOS 8.0+
+* iOS 10.0+
 * XCode 11.0+
 * Swift 5
 

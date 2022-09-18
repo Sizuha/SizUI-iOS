@@ -152,7 +152,6 @@ open class SizCellForEditText: SizPropertyTableCell, UITextFieldDelegate {
     }
     
     // if implemented, called in place of textFieldDidEndEditing:
-    @available(iOS 10.0, *)
     public func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         self.delegate?.textFieldDidEndEditing?(textField, reason: reason)
         onValueChanged?(textField.text)
