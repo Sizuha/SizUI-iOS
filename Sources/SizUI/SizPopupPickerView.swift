@@ -104,6 +104,9 @@ open class SizPopupPickerViewBase: UIView {
 	@objc optional func pickerView(_ pickerView: UIPickerView, didSelect rows: [Int])
 }
 
+/// deprecated
+///
+/// これの代わりに「PickerViewEx」を使うこと
 open class SizPopupPickerView: SizPopupPickerViewBase {
 	private var pickerView: UIPickerView!
     

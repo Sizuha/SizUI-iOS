@@ -30,6 +30,10 @@ public class PickerViewEx: UIView {
     private var fadeViewTap: UITapGestureRecognizer?
     
     public struct Options {
+        public var numberOfComponents: Int?
+        public var numberOfRowsInComponent: ((_ component: Int)->Int)?
+        public var titleForRow: ((_ component: Int, _ row: Int)->String)?
+        
         public var pickerHeight: CGFloat = 300
         public var didSelect: ((_ component: Int, _ row: Int)->Void)?
         public var didHide: (()->Void)?
@@ -113,11 +117,23 @@ public class PickerViewEx: UIView {
     
     public func show(
         from: UIViewController,
-        items: [[String]],
+        items: [[String]] = [],
         selected: [Int] = [],
         options: Options? = nil,
         didDone: ((_ selected: [Int], _ strings: [String?])->Void)? = nil
     ) {
+        if items.isEmpty {
+            guard
+                let options = options,
+                options.numberOfComponents ?? 0 > 0,
+                let _ = options.titleForRow,
+                let _ = options.numberOfRowsInComponent
+            else {
+                assert(false)
+                return
+            }
+        }
+        
         self.items.removeAll()
         self.items = items
         self.preSelectedRows = selected
@@ -232,11 +248,11 @@ public class PickerViewEx: UIView {
 extension PickerViewEx: UIPickerViewDataSource, UIPickerViewDelegate {
     
     public func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        self.items.count
+        self.options?.numberOfComponents ?? self.items.count
     }
     
     public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        self.items[component].count
+        self.options?.numberOfRowsInComponent?(component) ?? self.items[component].count
     }
     
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -244,7 +260,10 @@ extension PickerViewEx: UIPickerViewDataSource, UIPickerViewDelegate {
     }
     
     public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        self.items[component][row]
+        if let titleForRow = self.options?.titleForRow {
+            return titleForRow(component, row)
+        }
+        return self.items[component][row]
     }
     
 }
