@@ -166,7 +166,7 @@ public class PickerViewEx: UIView {
         for selRow in selected {
             guard
                 !items[component].isEmpty,
-                (0..<items[component].count).contains(selRow)
+                items[component].indices.contains(selRow)
             else {
                 component += 1
                 continue
@@ -199,7 +199,13 @@ public class PickerViewEx: UIView {
         
         var component = 0
         for selRow in selRows {
-            selStrings.append(self.items[component][selRow])
+            let items = self.items[component]            
+            if items.indices.contains(selRow) {
+                selStrings.append(items[selRow])
+            }
+            else {
+                selStrings.append(nil)
+            }
             component += 1
         }
         
@@ -244,6 +250,8 @@ public class PickerViewEx: UIView {
     }
     
 }
+
+// MARK: - PickerView Deleages
 
 extension PickerViewEx: UIPickerViewDataSource, UIPickerViewDelegate {
     
