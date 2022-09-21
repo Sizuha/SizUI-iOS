@@ -28,6 +28,7 @@ public class PickerViewEx: UIView {
     private var parentViewController: UIViewController?
     private var fadeView: UIView?
     private var fadeViewTap: UITapGestureRecognizer?
+    private var blurView: UIVisualEffectView?
     
     public struct Options {
         public var numberOfComponents: Int?
@@ -35,6 +36,7 @@ public class PickerViewEx: UIView {
         public var titleForRow: ((_ component: Int, _ row: Int)->String)?
         
         public var pickerHeight: CGFloat = 300
+        public var blurBackground = false
         public var backgorundColor: UIColor?
         public var didSelect: ((_ component: Int, _ row: Int)->Void)?
         public var didHide: (()->Void)?
@@ -69,9 +71,6 @@ public class PickerViewEx: UIView {
         // MARK: Picker Toolbar
         self.pickerToolbar = UIToolbar()
         self.pickerToolbar.isTranslucent = false
-        if let color = self.options?.backgorundColor {
-            self.pickerToolbar.barTintColor = color
-        }
         
         self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: self.pickerAreaHeight)
         self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: self.pickerAreaHeight)
@@ -100,13 +99,6 @@ public class PickerViewEx: UIView {
         
         // MARK: PickerView
         self.pickerView = UIPickerView()
-        
-        if let color = self.options?.backgorundColor {
-            self.backgroundColor = color
-        }
-        else {
-            self.backgroundColor = .systemBackground
-        }
         
         self.pickerView.dataSource = self
         self.pickerView.delegate = self
@@ -141,7 +133,7 @@ public class PickerViewEx: UIView {
         self.didDone = didDone
         self.parentViewController = from
         
-        doShow()
+        doShow(keyWindow: self.superview == nil)
     }
     
     private func doShow(keyWindow: Bool = true) {
@@ -150,28 +142,58 @@ public class PickerViewEx: UIView {
             return
         }
         
-        if let tap = self.fadeViewTap {
-            self.fadeView?.removeGestureRecognizer(tap)
-        }
+        self.blurView?.removeFromSuperview()
         
         if keyWindow {
-            self.fadeViewTap = UITapGestureRecognizer(target: self, action: #selector(cancel))
-            self.fadeView = from.fadeOut() { _ in
-                self.fadeView?.addGestureRecognizer(self.fadeViewTap!)
-            }
-            
             self.superview?.removeFromSuperview()
             getKeyWindow()?.addSubview(self)
         }
         
-        self.superview?.bringSubviewToFront(self)
-        self.isHidden = false
+        let isBlurBackground = self.options?.blurBackground == true
+        if isBlurBackground {
+            self.blurView = Blur(frame: self.frame, style: .regular)
+            self.superview?.addSubview(self.blurView!)
+            
+            self.pickerToolbar.isTranslucent = true
+            self.backgroundColor = .clear
+        }
+        else if let color = self.options?.backgorundColor {
+            self.pickerToolbar.barTintColor = color
+            self.backgroundColor = color
+        }
+        else {
+            self.backgroundColor = .systemBackground
+        }
+
+        
+        if let tap = self.fadeViewTap {
+            self.fadeView?.removeGestureRecognizer(tap)
+        }
+        
         let screenSize = UIScreen.main.bounds.size
         let paddingBottom = from.view.safeAreaInsets.bottom
+        let viewHeight = self.pickerView.frame.height + paddingBottom + 40
+        
+        if keyWindow {
+            self.fadeViewTap = UITapGestureRecognizer(target: self, action: #selector(cancel))
+
+            let fadeRect = isBlurBackground ? CGRect(
+                x: 0,
+                y: 0,
+                width: from.view.frame.width,
+                height: self.parentViewHeight() - viewHeight
+            ) : nil
+            
+            self.fadeView = from.fadeOut(frame: fadeRect) { _ in
+                self.fadeView?.addGestureRecognizer(self.fadeViewTap!)
+            }
+        }
+        
+        self.superview?.bringSubviewToFront(self)
+        self.isHidden = false
         let realPickerHeight = self.pickerAreaHeight - TOOLBAR_HEIGHT - paddingBottom
         self.pickerView.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: realPickerHeight)
         self.pickerView.frame = CGRect(x: 0, y: TOOLBAR_HEIGHT, width: screenSize.width, height: realPickerHeight)
-        let viewHeight = self.pickerView.frame.height + paddingBottom + 40
         
         var component = 0
         for selRow in self.preSelectedRows {
@@ -188,12 +210,14 @@ public class PickerViewEx: UIView {
         }
         
         UIView.animate(withDuration: 0.2) {
-            self.frame = CGRect(
+            let rect = CGRect(
                 x: 0,
                 y: self.parentViewHeight() - viewHeight,
                 width: screenSize.width,
                 height: viewHeight
             )
+            self.frame = rect
+            self.blurView?.frame = rect
         }
     }
     
@@ -221,31 +245,36 @@ public class PickerViewEx: UIView {
         self.didDone?(selRows, selStrings)
     }
     
+    var superviewIsKeyWindow: Bool {
+        (self.superview as? UIWindow)?.isKeyWindow == true
+    }
+    
     func hide() {
-        let isKeyWindow = (self.superview as? UIWindow)?.isKeyWindow == true
-        
         if let tap = self.fadeViewTap {
             self.fadeView?.removeGestureRecognizer(tap)
         }
         
-        if isKeyWindow {
+        if self.superviewIsKeyWindow {
             self.parentViewController?.fadeIn()
         }
         self.fadeView = nil
         
         let screenSize = UIScreen.main.bounds.size
         UIView.animate(withDuration: 0.2, animations: {
-            self.frame = CGRect(
+            let rect = CGRect(
                 x: 0,
                 y: self.parentViewHeight(),
                 width: screenSize.width,
                 height: self.pickerAreaHeight
             )
+            self.frame = rect
+            self.blurView?.frame = rect
         }) { finished in
             guard finished else { return }
 
+            self.blurView?.removeFromSuperview()
             self.isHidden = true
-            if isKeyWindow {
+            if self.superviewIsKeyWindow {
                 self.removeFromSuperview()
             }
             self.options?.didHide?()

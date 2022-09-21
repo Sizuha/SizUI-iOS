@@ -552,7 +552,6 @@ open class SizCellForPicker: SizCellForEditText, UIPickerViewDelegate, UIPickerV
         super.onInit()
         self.picker.delegate = self
         self.picker.dataSource = self
-        self.picker.showsSelectionIndicator = true
         self.textField.inputView = self.picker
         
         // Cursorを見せない為
@@ -597,7 +596,7 @@ open class SizCellForPicker: SizCellForEditText, UIPickerViewDelegate, UIPickerV
     // TextFieldで、編集メニューを見せない為
     open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         OperationQueue.main.addOperation {
-            UIMenuController.shared.setMenuVisible(false, animated: false)
+            UIMenuController.shared.hideMenu()
         }
 
         return super.canPerformAction(action, withSender: sender)

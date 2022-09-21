@@ -391,8 +391,13 @@ public extension UIViewController {
     
     // MARK: Fade Out/In
     
-    func fadeOut(tag: Int = 10101010, alpha: CGFloat = 0.3, completion: ((Bool)->Void)? = nil) -> UIView {
-        let fadeView = UIView(frame: self.view.frame)
+    func fadeOut(
+        tag: Int = 10101010,
+        alpha: CGFloat = 0.3,
+        frame: CGRect? = nil,
+        completion: ((Bool)->Void)? = nil
+    ) -> UIView {
+        let fadeView = UIView(frame: frame ?? self.view.frame)
         fadeView.tag = tag
         fadeView.backgroundColor = UIColor.black
         
@@ -408,7 +413,7 @@ public extension UIViewController {
         
         return fadeView
     }
-
+    
     func fadeIn(tag: Int = 10101010, completion: ((Bool)->Void)? = nil) {
         guard let fadeView = getKeyWindow()?.subviews.first(where: { $0.tag == tag }) else {
             return
