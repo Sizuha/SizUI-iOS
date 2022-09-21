@@ -35,6 +35,7 @@ public class PickerViewEx: UIView {
         public var titleForRow: ((_ component: Int, _ row: Int)->String)?
         
         public var pickerHeight: CGFloat = 300
+        public var backgorundColor: UIColor?
         public var didSelect: ((_ component: Int, _ row: Int)->Void)?
         public var didHide: (()->Void)?
     }
@@ -63,17 +64,14 @@ public class PickerViewEx: UIView {
     
     private func onInit() {
         let screenSize = UIScreen.main.bounds.size
-        if #available(iOS 13.0, *) {
-            self.backgroundColor = .systemBackground
-        }
-        else {
-            self.backgroundColor = .white
-        }
+        //self.backgroundColor = .clear
         
         // MARK: Picker Toolbar
         self.pickerToolbar = UIToolbar()
         self.pickerToolbar.isTranslucent = false
-        self.pickerToolbar.backgroundColor = UIColor.clear
+        if let color = self.options?.backgorundColor {
+            self.pickerToolbar.barTintColor = color
+        }
         
         self.bounds = CGRect(x: 0, y: 0, width: screenSize.width, height: self.pickerAreaHeight)
         self.frame = CGRect(x: 0, y: parentViewHeight(), width: screenSize.width, height: self.pickerAreaHeight)
@@ -102,12 +100,19 @@ public class PickerViewEx: UIView {
         
         // MARK: PickerView
         self.pickerView = UIPickerView()
-        if #available(iOS 13.0, *) {
-            self.pickerView.backgroundColor = .systemBackground
+        
+        if let color = self.options?.backgorundColor {
+            self.backgroundColor = color
         }
         else {
-            self.pickerView.backgroundColor = .white
+            if #available(iOS 13.0, *) {
+                self.backgroundColor = .systemBackground
+            }
+            else {
+                self.backgroundColor = .white
+            }
         }
+        
         self.pickerView.dataSource = self
         self.pickerView.delegate = self
         self.addSubview(self.pickerView)
@@ -141,19 +146,30 @@ public class PickerViewEx: UIView {
         self.didDone = didDone
         self.parentViewController = from
         
+        doShow()
+    }
+    
+    private func doShow(keyWindow: Bool = true) {
+        guard let from = self.parentViewController else {
+            assert(false)
+            return
+        }
+        
         if let tap = self.fadeViewTap {
             self.fadeView?.removeGestureRecognizer(tap)
         }
-        self.fadeViewTap = UITapGestureRecognizer(target: self, action: #selector(cancel))
         
-        self.fadeView = from.fadeOut() { _ in
-            self.fadeView?.addGestureRecognizer(self.fadeViewTap!)
+        if keyWindow {
+            self.fadeViewTap = UITapGestureRecognizer(target: self, action: #selector(cancel))
+            self.fadeView = from.fadeOut() { _ in
+                self.fadeView?.addGestureRecognizer(self.fadeViewTap!)
+            }
+            
+            self.superview?.removeFromSuperview()
+            getKeyWindow()?.addSubview(self)
         }
         
-        self.superview?.removeFromSuperview()
-        getKeyWindow()?.addSubview(self)
         self.superview?.bringSubviewToFront(self)
-        
         self.isHidden = false
         let screenSize = UIScreen.main.bounds.size
         let paddingBottom = from.view.safeAreaInsets.bottom
@@ -163,7 +179,7 @@ public class PickerViewEx: UIView {
         let viewHeight = self.pickerView.frame.height + paddingBottom + 40
         
         var component = 0
-        for selRow in selected {
+        for selRow in self.preSelectedRows {
             guard
                 !items[component].isEmpty,
                 items[component].indices.contains(selRow)
@@ -199,13 +215,11 @@ public class PickerViewEx: UIView {
         
         var component = 0
         for selRow in selRows {
-            let items = self.items[component]            
-            if items.indices.contains(selRow) {
-                selStrings.append(items[selRow])
-            }
-            else {
-                selStrings.append(nil)
-            }
+            let str = self.items.indices.contains(selRow)
+                ? self.items[component][selRow]
+                : nil
+            
+            selStrings.append(str)
             component += 1
         }
         
@@ -213,11 +227,15 @@ public class PickerViewEx: UIView {
     }
     
     func hide() {
+        let isKeyWindow = (self.superview as? UIWindow)?.isKeyWindow == true
+        
         if let tap = self.fadeViewTap {
             self.fadeView?.removeGestureRecognizer(tap)
         }
         
-        self.parentViewController?.fadeIn()
+        if isKeyWindow {
+            self.parentViewController?.fadeIn()
+        }
         self.fadeView = nil
         
         let screenSize = UIScreen.main.bounds.size
@@ -232,7 +250,9 @@ public class PickerViewEx: UIView {
             guard finished else { return }
 
             self.isHidden = true
-            self.removeFromSuperview()
+            if isKeyWindow {
+                self.removeFromSuperview()
+            }
             self.options?.didHide?()
         }
     }

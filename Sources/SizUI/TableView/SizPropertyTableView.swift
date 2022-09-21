@@ -12,6 +12,10 @@ public let FILL_WIDTH: CGFloat = -10
 public let HALF_WIDTH: CGFloat = -2
 
 
+public protocol SizViewUpdater {
+    func refreshViews()
+}
+
 // MARK: - SizPropertyTableSection
 
 open class SizPropertyTableSection {

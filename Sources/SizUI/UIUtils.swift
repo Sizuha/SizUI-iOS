@@ -5,21 +5,6 @@
 import UIKit
 import AVKit
 
-public extension IndexPath {
-    static var zero: IndexPath {
-        IndexPath(row: 0, section: 0)
-    }
-    
-    var nextRow: IndexPath {
-        IndexPath(row: self.row+1, section: self.section)
-    }
-    
-    var prevRow: IndexPath? {
-        guard self.row > 0 else { return nil }
-        return IndexPath(row: self.row-1, section: self.section)
-    }
-}
-
 public extension CGRect {
     init(width: CGFloat, height: CGFloat) {
         self.init(x: 0, y: 0, width: width, height: height)
@@ -455,28 +440,46 @@ public extension UIViewController {
 
 }
 
-// MARK: - UITableView
+// MARK: - UITableView関連
 
 public extension UITableView {
 	var selectedCount: Int {
 		return self.indexPathsForSelectedRows?.count ?? 0
 	}
+    
+    /// didSelectRowAtのDelegateを実行
+    /// - Parameter rowAt: An index path locating the new selected row in tableView.
+    func performDidSelect(rowAt: IndexPath) {
+        self.delegate?.tableView?(self, didSelectRowAt: rowAt)
+    }
 }
 
-public protocol SizViewUpdater {
-	func refreshViews()
+public extension IndexPath {
+    static var zero: IndexPath {
+        IndexPath(row: 0, section: 0)
+    }
+    
+    var nextRow: IndexPath {
+        IndexPath(row: self.row+1, section: self.section)
+    }
+    
+    var prevRow: IndexPath? {
+        guard self.row > 0 else { return nil }
+        return IndexPath(row: self.row-1, section: self.section)
+    }
 }
+
 
 // MARK: - UIScrollView
 
 public extension UIScrollView {
     
-    func scrollToTopOf(child: UIView, offset: CGFloat, x: CGFloat = CGFloat(0) ) {
-        self.contentOffset = CGPoint(x: x, y: child.frame.minY - child.frame.height - offset)
+    func scrollTo(topOf subView: UIView, offsetY: CGFloat, x: CGFloat = CGFloat(0) ) {
+        self.contentOffset = CGPoint(x: x, y: subView.frame.minY + offsetY)
     }
     
-    func scrollToLeftOf(child: UIView, offset: CGFloat, y: CGFloat = CGFloat(0)) {
-        self.contentOffset = CGPoint(x: child.frame.minX - child.frame.width - offset, y: y)
+    func scrollTo(leftOf subView: UIView, offsetX: CGFloat, y: CGFloat = CGFloat(0)) {
+        self.contentOffset = CGPoint(x: subView.frame.minX + offsetX, y: y)
     }
     
 }
