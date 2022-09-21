@@ -15,27 +15,29 @@ public extension CGRect {
 // Color extention to hex
 public extension UIColor {
 	convenience init(hexString: String, alpha: CGFloat = 1.0) {
-		let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-		let startWithSharp = hexString.hasPrefix("#")
-		let startWithAlpha = startWithSharp && hexString.count == 9 // #aarrggbb
+        //let startWithSharp = hexString.hasPrefix("#")
+		let hexString: String = hexString
+            .trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            .replacingOccurrences(of: "#", with: "")
+            .lowercased()
+        
+		let startWithAlpha = hexString.count == 8 // #aarrggbb
 		
 		let scanner: Scanner
-		if startWithSharp && hexString.count == 4 {
+		if hexString.count == 4 {
 			// need convert: "#rgb" --> "#rrggbb"
 			var converted = ""
 			for c in hexString {
 				if c != "#" { converted.append("\(c)\(c)") }
 			}
 			scanner = Scanner(string: converted)
-			scanner.scanLocation = 0
 		}
 		else {
 			scanner = Scanner(string: hexString)
-			scanner.scanLocation = startWithSharp ? 1 : 0
 		}
 		
-		var color: UInt32 = 0
-		scanner.scanHexInt32(&color)
+		var color: UInt64 = 0
+		scanner.scanHexInt64(&color)
 		
 		let mask = 0x000000FF
 		let a = Int(color >> 24) & mask
@@ -201,15 +203,10 @@ public extension UIApplication {
 	func getKeyWindow() -> UIWindow? { windows.first { $0.isKeyWindow } }
     
     var interfaceOrientation: UIInterfaceOrientation? {
-        if #available(iOS 13.0, *) {
-            return self.windows
-                .first?
-                .windowScene?
-                .interfaceOrientation
-        }
-        else {
-            return self.statusBarOrientation
-        }
+        self.windows
+            .first?
+            .windowScene?
+            .interfaceOrientation
     }
     
     func getLandscapeOrientation(default: UIInterfaceOrientation = .landscapeRight) -> UIInterfaceOrientation {
@@ -366,9 +363,7 @@ public extension UIViewController {
 	}
     
     func setDisablePullDownDismiss() {
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
+        self.isModalInPresentation = true
     }
 	
 	func removeAllSubViews() {
@@ -379,24 +374,19 @@ public extension UIViewController {
 		}
 	}
 	
-	@available(iOS 11.0, *)
 	func changeStatusBar(color: UIColor) {
-		if #available(iOS 13, *) {
-			let statusBarHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
+        let statusBarHeight: CGFloat =
+            view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
 
-			let statusbarView = UIView()
-			statusbarView.backgroundColor = color
-			view.addSubview(statusbarView)
+        let statusbarView = UIView()
+        statusbarView.backgroundColor = color
+        view.addSubview(statusbarView)
 
-			statusbarView.translatesAutoresizingMaskIntoConstraints = false
-			statusbarView.heightAnchor.constraint(equalToConstant: statusBarHeight).isActive = true
-			statusbarView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1.0).isActive = true
-			statusbarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-			statusbarView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-		}
-		else {
-			UIApplication.shared.statusBarView?.backgroundColor = color
-		}
+        statusbarView.translatesAutoresizingMaskIntoConstraints = false
+        statusbarView.heightAnchor.constraint(equalToConstant: statusBarHeight).isActive = true
+        statusbarView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1.0).isActive = true
+        statusbarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        statusbarView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 	}
     
     // MARK: Fade Out/In
@@ -510,7 +500,7 @@ public extension UIAlertController {
 		let alert: UIAlertController = self.init(title: nil, message: message, preferredStyle: .alert)
 		
 		// Add Indicator
-		let indicator = UIActivityIndicatorView(style: style ?? (viewController.isDarkMode ? .white : .gray))
+        let indicator = UIActivityIndicatorView(style: style ?? .medium)
 		indicator.center = indicatorCenter
 		alert.view.addSubview(indicator)
 		
@@ -737,7 +727,6 @@ public class PinchRect {
 // MARK: - UITabBar
 
 public extension UITabBar {
-    @available(iOS 13.0, *)
     func removeUpperBorderLine() {
         let appearance = self.standardAppearance
         appearance.configureWithOpaqueBackground()
