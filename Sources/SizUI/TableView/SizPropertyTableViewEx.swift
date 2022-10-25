@@ -112,7 +112,7 @@ open class TableCellDefineBase<T: SizPropertyTableCell>: SizPropertyTableRow {
 	
 }
 
-public typealias TableSection = SizPropertyTableSection
+//public typealias TableSection = SizPropertyTableSection
 
 public typealias TextCell = TableCellDefineBase<SizCellForText>
 public typealias EditTextCell = TableCellDefineBase<SizCellForEditText>
