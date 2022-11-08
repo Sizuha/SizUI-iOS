@@ -10,6 +10,11 @@ import UIKit
 public struct TextFieldValidation {
     public var maxLength: Int = 0
     public var pattern: String? = nil
+    
+    public init(maxLength: Int, pattern: String? = nil) {
+        self.maxLength = maxLength
+        self.pattern = pattern
+    }
 }
 
 public extension UITextField {
