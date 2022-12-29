@@ -50,7 +50,7 @@ func createActions(_ buttons: [ActionButton]) -> [UIAlertAction] {
     return actions
 }
 
-// MARK: ActionSheet
+// MARK: - ActionSheet
 public class ActionSheet {
     public let builder: SizAlertBuilder
     
@@ -74,7 +74,7 @@ public class ActionSheet {
     }
 }
 
-// MARK: Alert
+// MARK: - Alert
 public class Alert {
     public let builder: SizAlertBuilder
     
@@ -98,7 +98,7 @@ public class Alert {
     }
 }
 
-// MARK: SwipeAction
+// MARK: - SwipeAction
 @available(iOS 11.0, *)
 public enum SwipeAction {
     case normal(text: String? = nil, image: UIImage? = nil, bgColor: UIColor? = nil, action: UIContextualAction.Handler)
@@ -123,7 +123,55 @@ public func Swipe(
     return builder.createConfig(enableFullSwipe: enableFullSwipe)
 }
 
-// MARK: PickerView
+// MARK: - PickerView
 public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: String)->Void) -> SizStringPicker {
     SizStringPicker(strings: strings, onSelected: onSelected)
+}
+
+// MARK: - BarButtonItem, Toolbar
+
+public enum BarButtonItem {
+    case space(fixed: CGFloat = 0)
+    case button(
+        title: String,
+        style: UIBarButtonItem.Style = .plain,
+        target: Any? = nil,
+        action: Selector? = nil
+    )
+}
+
+public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
+    var itemList: [UIBarButtonItem] = []
+    for item in items {
+        let bbi: UIBarButtonItem
+        switch item {
+        case .space(let width):
+            if width > 0 {
+                bbi = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+                bbi.width = width
+            }
+            else {
+                bbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+            }
+            
+        case .button(let title, let style, let target, let action):
+            bbi = UIBarButtonItem(title: title, style: style, target: target, action: action)
+            
+        default: continue
+        }
+        
+        itemList.append(bbi)
+    }
+    return itemList
+}
+
+public func Toolbar(items: [BarButtonItem]) -> UIToolbar {
+    Toolbar(items: makeBarButtonItems(items))
+}
+
+public func Toolbar(items: [UIBarButtonItem]) -> UIToolbar {
+    let toolbar = UIToolbar()
+    
+    
+    return toolbar
 }
