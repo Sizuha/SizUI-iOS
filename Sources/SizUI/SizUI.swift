@@ -132,6 +132,7 @@ public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: S
 
 public enum BarButtonItem {
     case space(fixed: CGFloat = 0)
+    case flexibleSpace
     case button(
         title: String,
         style: UIBarButtonItem.Style = .plain,
@@ -151,8 +152,11 @@ public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
                 bbi.width = width
             }
             else {
-                bbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+                fallthrough
             }
+            
+        case .flexibleSpace:
+            bbi = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
             
         case .button(let title, let style, let target, let action):
             bbi = UIBarButtonItem(title: title, style: style, target: target, action: action)
