@@ -170,12 +170,9 @@ public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
 }
 
 public func Toolbar(items: [BarButtonItem]) -> UIToolbar {
-    Toolbar(items: makeBarButtonItems(items))
-}
-
-public func Toolbar(items: [UIBarButtonItem]) -> UIToolbar {
     let toolbar = UIToolbar()
-    
-    
+    toolbar.items = makeBarButtonItems(items)
+    toolbar.isUserInteractionEnabled = true
+    toolbar.sizeToFit()
     return toolbar
 }
