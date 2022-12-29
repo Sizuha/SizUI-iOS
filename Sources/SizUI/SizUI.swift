@@ -131,7 +131,7 @@ public func Picker(strings: [String], onSelected: @escaping (_ i: Int, _ text: S
 // MARK: - BarButtonItem, Toolbar
 
 public enum BarButtonItem {
-    case space(fixed: CGFloat = 0)
+    case space(_ width: CGFloat = 0)
     case flexibleSpace
     case button(
         title: String,
@@ -139,8 +139,30 @@ public enum BarButtonItem {
         target: Any? = nil,
         action: Selector? = nil
     )
+    case image(
+        _ image: UIImage,
+        target: Any? = nil,
+        action: Selector? = nil
+    )
+    case system(
+        item: UIBarButtonItem.SystemItem,
+        target: Any? = nil,
+        action: Selector? = nil
+    )
+    case systemMenu(
+        item: UIBarButtonItem.SystemItem,
+        primary: UIAction? = nil,
+        menu: UIMenu? = nil
+    )
+    case menu(
+        title: String? = nil,
+        image: UIImage? = nil,
+        primary: UIAction? = nil,
+        menu: UIMenu? = nil
+    )
 }
 
+@available(iOS 14.0, *)
 public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
     var itemList: [UIBarButtonItem] = []
     for item in items {
@@ -161,7 +183,17 @@ public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
         case .button(let title, let style, let target, let action):
             bbi = UIBarButtonItem(title: title, style: style, target: target, action: action)
             
-        default: continue
+        case .image(let image, let target, let action):
+            bbi = UIBarButtonItem(image: image, style: .plain, target: target, action: action)
+            
+        case .system(let item, let target, let action):
+            bbi = UIBarButtonItem(barButtonSystemItem: item, target: target, action: action)
+            
+        case .systemMenu(let item, let primaryAction, let menu):
+            bbi = UIBarButtonItem(systemItem: item, primaryAction: primaryAction, menu: menu)
+            
+        case .menu(let title, let image, let primaryAction, let menu):
+            bbi = UIBarButtonItem(title: title, image: image, primaryAction: primaryAction, menu: menu)
         }
         
         itemList.append(bbi)
@@ -169,6 +201,7 @@ public func makeBarButtonItems(_ items: [BarButtonItem]) -> [UIBarButtonItem] {
     return itemList
 }
 
+@available(iOS 14.0, *)
 public func Toolbar(items: [BarButtonItem]) -> UIToolbar {
     let toolbar = UIToolbar()
     toolbar.items = makeBarButtonItems(items)
