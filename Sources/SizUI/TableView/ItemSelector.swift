@@ -45,11 +45,12 @@ open class ItemSelector: UIViewController {
         title: String,
         items: [String],
         selected: Int? = nil,
+        modal: Bool = false,
         onSelected: @escaping (_ index: Int)->Void
     ) {
         let vc = create(title: title, items: items, selected: selected, onSelected: onSelected)
         
-        if let navi = from as? UINavigationController {
+        if !modal, let navi = from as? UINavigationController {
             navi.pushViewController(vc, animated: true)
         }
         else {
